@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RainFly</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <link rel="stylesheet" type="text/css" href="../common/base.css" />
+  <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+<body>
+  <div class="login module">
+    <div class="title">
+      <div class="txt">登录模块</div>
+      <div class="status">（当前未登录）</div>
+      <div class="operators">
+        <button class="btn jsLogin">点击登录</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="formItem">
+        <div class="label">用户名：</div> <input id="name" class="name" type="text" value="" disabled />
+      </div>
+      <div class="formItem">
+        <div class="label">密码：</div> <input id="password" class="name" type="password" value="" disabled />
+      </div>
+    </div>
+    <div class="remark">专属软件，不支持他人使用</div>
+  </div>
+  <div class="invoice module">
+    <div class="title">
+      <div class="txt">提交草稿模块</div>
+      <div class="status">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn">点击开始</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta" id="invoiceAll"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta" id="invoiceSuccess"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已失败合同号：</div> <textarea class="ta" id="invoiceError"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="logWrap">
+        <textarea class="log" id="logInvoice">
+          (node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information
+        </textarea>
+      </div>
+    </div>
+    <div class="remark">运行结果：</div>
+  </div>
+  <div class="download module">
+    <div class="title">
+      <div class="txt">下载草稿模块</div>
+      <div class="status">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn">点击开始</button>
+      </div>
+    </div>
+    <div class="pathWrap">
+      <div class="label">下载路径：</div>
+      <div class="path jsPath"></div>
+      <button class="btn jsPathSelect">点击选择</button>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta" id="invoiceAll"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta" id="invoiceSuccess"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已失败合同号：</div> <textarea class="ta" id="invoiceError"></textarea> <div class="tip">共0个</div>
+      </div>
+      <div class="logWrap">
+        <textarea class="log" id="logDownload">
+          (node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information
+        </textarea>
+      </div>
+    </div>
+    <div class="remark">运行结果：</div>
+  </div>
+  <script src="index.js"></script>
+  <!-- <script>
+    const {remote} = require('electron')
+    remote.dialog.showErrorBox('An Error Message', 'Demonstrating an error message.')
+//     const app = require('electron').remote.app
+// console.log(remote)
+    document.querySelector('.jsLogin').innerHTML = 'test'
+  </script> -->
+</body>
+</html>

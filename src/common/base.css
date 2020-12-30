@@ -1,0 +1,39 @@
+textarea {
+  resize: none;
+}
+body {
+  font-size:14px;
+}
+.module {
+  border:solid 1px gray;
+  margin-bottom:10px;
+  padding:5px;
+}
+.module .title {
+  display:flex;
+  align-items: center;
+}
+.module .title .txt {
+  font-weight: bold;
+  font-size:16px;
+}
+.module .content {
+  margin-top:5px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.module .content .formItem {
+  display:flex;
+  align-items: center;
+  width:50%;
+}
+.module .content .formItem.column {
+  flex-direction: column;
+  align-items: flex-start;
+  width:33%;
+}
+.module .remark {
+  margin-top:5px;
+  color:red;
+}
