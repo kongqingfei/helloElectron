@@ -12,12 +12,28 @@ async function toast(msg) {
   await remote.dialog.showMessageBox(remote.getCurrentWindow(), {title: '操作提示', message: msg})
 }
 function bindEvent() {
+  // 选择谷歌浏览器路径
+  qs('.login .jsPathSelect').addEventListener('click', () => {
+    remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+      properties: ['openFile'],
+      filters: [
+        { name: 'chrome.exe', extensions: ['exe'] }
+      ]
+    }).then((res) => {
+      const {canceled, filePaths} = res;
+      if (!canceled) {
+        qs('.login .jsPath').innerHTML = filePaths[0]
+        config.chromePath = filePaths[0]
+        ipcRenderer.send('setConfigValue', {chromePath: config.chromePath})
+      }
+    })
+  })
   // 选择下载草稿路径
-  qs('.jsPathSelect').addEventListener('click', () => {
+  qs('.download .jsPathSelect').addEventListener('click', () => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), { properties: ['openDirectory'] }).then((res) => {
       const {canceled, filePaths} = res;
       if (!canceled) {
-        qs('.jsPath').innerHTML = filePaths[0]
+        qs('.download .jsPath').innerHTML = filePaths[0]
         config.download = config.download || {}
         config.download.draftPath = filePaths[0]
         ipcRenderer.send('setConfigValue', {download: config.download})
@@ -26,9 +42,12 @@ function bindEvent() {
   })
   // 登录
   qs('.jsLogin').addEventListener('click', async () => {
+    if (!config.chromePath) {
+      return await toast('请先设置谷歌浏览器路径')
+    }
     qs('.login .status').innerHTML = '（登录中...）'
     qs('.login .status').className = 'status'
-    const ret = await ipcRenderer.invoke('puppeteer.login', config.login)
+    const ret = await ipcRenderer.invoke('puppeteer.login', {...config.login, chromePath: config.chromePath})
     if (ret) {
       qs('.login .status').innerHTML = '（登录成功）'
       qs('.login .status').className = 'status success'
@@ -133,11 +152,14 @@ function stopLog() {
   getLog()
 }
 function init() {
-  const {login, download={}} = config
+  const {login, download={}, chromePath} = config
   qs('#name').value = login.name
   qs('#password').value = login.password
   if (download.draftPath) {
-    qs('.jsPath').innerHTML = download.draftPath
+    qs('.download .jsPath').innerHTML = download.draftPath
+  }
+  if (chromePath) {
+    qs('.login .jsPath').innerHTML = chromePath
   }
   bindEvent()
   // alert(ipcRenderer.sendSync('os.homedir', {a: 1, b: 2}))

@@ -1,5 +1,5 @@
 .invoice .ta, .download .ta {
-  height:160px;
+  height:140px;
 }
 .invoice .logWrap, .download .logWrap {
   width:100%;
@@ -14,10 +14,10 @@
   margin-top:5px;
   box-sizing: border-box;
 }
-.download .pathWrap {
+.download .pathWrap, .login .pathWrap {
   margin-top: 5px;
   display: flex;
 }
-.download .pathWrap .btn {
+.download .pathWrap .btn, .login .pathWrap .btn {
   margin-left: 5px;
 }

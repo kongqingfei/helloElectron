@@ -4,7 +4,8 @@ const {screenWidth, screenHeight} = require('../config')
 module.exports = {
   createPage: async function(opts) {
     const browser = await puppeteer.launch(Object.assign({
-      executablePath: "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+      // "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+      executablePath: opts.chromePath,
       // headless: false,
       args: ['--start-maximized'],
       // slowMo: 30,

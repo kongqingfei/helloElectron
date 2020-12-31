@@ -5,8 +5,6 @@ const puppeteerUtil = require('./utils/puppeteerUtil')
 const log = require('./utils/logUtil')
 const config = readConfig()
 
-puppeteerUtil.init()
-
 ipcMain.on('getConfig', (event) => {
   event.returnValue = config
 })
@@ -21,7 +19,7 @@ ipcMain.on('setConfigValue', (event, param) => {
   }
 })
 ipcMain.handle('puppeteer.login', async (event, param) => {
-  return await puppeteerUtil.login(param.name, param.password)
+  return await puppeteerUtil.login(param)
 })
 ipcMain.handle('puppeteer.makeInvoice', async (event, param) => {
   return await puppeteerUtil.makeInvoice(param)
