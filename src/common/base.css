@@ -35,5 +35,10 @@ body {
 }
 .module .remark {
   margin-top:5px;
-  color:red;
+}
+.module .success {
+  color:#52c41a;
+}
+.module .error {
+  color:#ff4d4f;
 }

@@ -24,30 +24,28 @@
         <div class="label">密码：</div> <input id="password" class="name" type="password" value="" disabled />
       </div>
     </div>
-    <div class="remark">专属软件，不支持他人使用</div>
+    <div class="remark success">专属软件，不支持他人使用</div>
   </div>
   <div class="invoice module">
     <div class="title">
       <div class="txt">提交草稿模块</div>
-      <div class="status">（当前未运行）</div>
+      <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
-        <button class="btn">点击开始</button>
+        <button class="btn jsDoInvoice">点击开始</button>
       </div>
     </div>
     <div class="content">
       <div class="formItem column">
-        <div class="label">待处理合同号：</div> <textarea class="ta" id="invoiceAll"></textarea> <div class="tip">共0个</div>
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
       </div>
       <div class="formItem column">
-        <div class="label">已成功合同号：</div> <textarea class="ta" id="invoiceSuccess"></textarea> <div class="tip">共0个</div>
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
       </div>
       <div class="formItem column">
-        <div class="label">已失败合同号：</div> <textarea class="ta" id="invoiceError"></textarea> <div class="tip">共0个</div>
+        <div class="label">已失败合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
       </div>
       <div class="logWrap">
-        <textarea class="log" id="logInvoice">
-          (node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information
-        </textarea>
+        <textarea class="log" id="logInvoice"></textarea>
       </div>
     </div>
     <div class="remark">运行结果：</div>
@@ -55,9 +53,9 @@
   <div class="download module">
     <div class="title">
       <div class="txt">下载草稿模块</div>
-      <div class="status">（当前未运行）</div>
+      <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
-        <button class="btn">点击开始</button>
+        <button class="btn jsDoDownload">点击开始</button>
       </div>
     </div>
     <div class="pathWrap">
@@ -67,18 +65,16 @@
     </div>
     <div class="content">
       <div class="formItem column">
-        <div class="label">待处理合同号：</div> <textarea class="ta" id="invoiceAll"></textarea> <div class="tip">共0个</div>
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
       </div>
       <div class="formItem column">
-        <div class="label">已成功合同号：</div> <textarea class="ta" id="invoiceSuccess"></textarea> <div class="tip">共0个</div>
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
       </div>
       <div class="formItem column">
-        <div class="label">已失败合同号：</div> <textarea class="ta" id="invoiceError"></textarea> <div class="tip">共0个</div>
+        <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
       </div>
       <div class="logWrap">
-        <textarea class="log" id="logDownload">
-          (node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information(node:16428) electron: The default of contextIsolation is deprecated and will be changing from false to true in a future release of Electron.  See https://github.com/electron/electron/issues/23506 for more information
-        </textarea>
+        <textarea class="log" id="logDownload"></textarea>
       </div>
     </div>
     <div class="remark">运行结果：</div>

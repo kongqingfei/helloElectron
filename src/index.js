@@ -1,7 +1,11 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron')
 const { Notification } = require('electron')
 const {readConfig, writeConfig} = require('./utils/configUitl.js')
+const puppeteerUtil = require('./utils/puppeteerUtil')
+const log = require('./utils/logUtil')
 const config = readConfig()
+
+puppeteerUtil.init()
 
 ipcMain.on('getConfig', (event) => {
   event.returnValue = config
@@ -15,6 +19,18 @@ ipcMain.on('setConfigValue', (event, param) => {
   if (JSON.stringify(config) !== oldStr) {
     writeConfig(config)
   }
+})
+ipcMain.handle('puppeteer.login', async (event, param) => {
+  return await puppeteerUtil.login(param.name, param.password)
+})
+ipcMain.handle('puppeteer.makeInvoice', async (event, param) => {
+  return await puppeteerUtil.makeInvoice(param)
+})
+ipcMain.handle('puppeteer.downloadInvoice', async (event, param) => {
+  return await puppeteerUtil.downloadInvoice(param)
+})
+ipcMain.handle('log.getLog', async () => {
+  return log.getLog()
 })
 
 function showNotification () {
@@ -35,31 +51,7 @@ function createWindow () {
       enableRemoteModule: true
     }
   })
-
   win.loadFile('./src/pages/index.html')
-
-  win.setProgressBar(0.5)
-
-  // dialog.showOpenDialog(win, { properties: ['openDirectory'] }).then((res) => {
-  //   console.log(res)
-  // })
-
-  //设置菜单
-  // let dockMenu = Menu.buildFromTemplate([
-  //   {
-  //       label: '文件', click: function () {
-  //           console.log('点击事件');
-  //       }
-  //   },
-  //   {
-  //       label: '编辑', submenu: [
-  //           {label: '保存'},
-  //           {label: '另存'}
-  //       ]
-  //   },
-  //   {label: '帮助'}
-  // ]);
-  // Menu.setApplicationMenu(dockMenu);
 }
 
 app.whenReady().then(createWindow)
