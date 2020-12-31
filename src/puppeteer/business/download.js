@@ -9,6 +9,8 @@ async function downloadInvoice (opts) {
   const {browser, page, invoiceArr, draftPath} = opts
   const start = Date.now();
   log.info(`----下载草稿excel自动化任务开始----`)
+  await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
+  await page.waitForSelector('#table > tbody > tr')
   await page.click("[ng-click=\"getData('mybegins')\"]")
   await page.waitForSelector('#table > tbody > tr')
   // 计算行号

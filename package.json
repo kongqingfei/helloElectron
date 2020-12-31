@@ -33,7 +33,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "helloElectron"
+            "name": "helloElectron",
+            "iconUrl": "./favicon.ico"
           }
         },
         {

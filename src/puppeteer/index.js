@@ -116,20 +116,22 @@ async function makeInvoice(opts) {
   }
   // 失败重试一次
   log.info(`异常合同重试：${JSON.stringify(waitArr)}`)
-  let waitLen = waitArr.length
-  let tempArr = []
+  let tempArr = waitArr
+  let prevArr, prevLen
   do {
+    prevArr = tempArr
+    prevLen = prevArr.length
     tempArr = []
-    for(let i = 0; i < waitArr.length; i++) {
+    for(let i = 0; i < prevArr.length; i++) {
       try {
-        await submitOne(waitArr[i])
+        await submitOne(prevArr[i])
       } catch(e) {
         log.error(e.stack);
-        log.error(`----${waitArr[i]}合同处理失败----未知异常----`)
-        tempArr.push(waitArr[i])
+        log.error(`----${prevArr[i]}合同处理失败----未知异常----`)
+        tempArr.push(prevArr[i])
       }
     }
-  } while(tempArr.length < waitLen)
+  } while(tempArr.length < prevLen)
   tempArr.forEach((item) => {
     errorArr.push(item)
   })
