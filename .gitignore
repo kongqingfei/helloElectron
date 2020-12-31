@@ -25,3 +25,4 @@ views
 config/*.local.js
 
 #package-lock.json
+out/
