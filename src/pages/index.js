@@ -73,6 +73,10 @@ function bindEvent() {
     if (invoiceArr.length === 0) {
       return await toast('请先录入待处理合同号')
     }
+    qs('.invoice .jsInvoiceSuccess').value = ''
+    qs('.invoice .jsNumSuccess').innerHTML = `共0个`
+    qs('.invoice .jsInvoiceError').value = ''
+    qs('.invoice .jsNumError').innerHTML = `共0个`
     qs('.invoice .jsStatus').innerHTML = '（运行中...）'
     currentTa = qs('#logInvoice')
     getLog(true)
@@ -110,6 +114,10 @@ function bindEvent() {
     if (invoiceArr.length === 0) {
       return await toast('请先录入待处理合同号')
     }
+    qs('.download .jsInvoiceSuccess').value = ''
+    qs('.download .jsNumSuccess').innerHTML = `共0个`
+    qs('.download .jsInvoiceError').value = ''
+    qs('.download .jsNumError').innerHTML = `共0个`
     qs('.download .jsStatus').innerHTML = '（运行中...）'
     currentTa = qs('#logDownload')
     getLog(true)

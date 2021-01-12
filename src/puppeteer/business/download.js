@@ -52,7 +52,7 @@ async function downloadInvoice (opts) {
       const tempNo = no.split('-')[0]
       if (invoiceArr.includes(tempNo) && !successArr.includes(tempNo)) { // 只取最新的
         processIdArr.push(processIds[ind])
-        successArr.push(no)
+        successArr.push(tempNo)
       }
     })
   }
@@ -81,6 +81,7 @@ async function downloadInvoice (opts) {
       return
     }
     filename = `${draftPath}\\发票清单${moment().format('YYYY-MM-DD_HH-mm-ss')}.zip`
+    log.info(`文件开始下载：http://cdwp.cnbmxinyun.com/mkinvoicenew/packagedownload?id=${encodeURIComponent(processIdArr.join(','))}`)
     await downloadFile(`http://cdwp.cnbmxinyun.com/mkinvoicenew/packagedownload?id=${encodeURIComponent(processIdArr.join(','))}`, filename)
     log.info(`文件下载成功：${filename}`)
   }
