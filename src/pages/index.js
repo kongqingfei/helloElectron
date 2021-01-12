@@ -78,6 +78,8 @@ function bindEvent() {
     qs('.invoice .jsInvoiceError').value = ''
     qs('.invoice .jsNumError').innerHTML = `共0个`
     qs('.invoice .jsStatus').innerHTML = '（运行中...）'
+    qs('.invoice .remark').innerHTML = `运行结果：`
+    qs('.invoice .remark').className = 'remark'
     currentTa = qs('#logInvoice')
     getLog(true)
     const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.makeInvoice', {invoiceArr});
@@ -119,6 +121,8 @@ function bindEvent() {
     qs('.download .jsInvoiceError').value = ''
     qs('.download .jsNumError').innerHTML = `共0个`
     qs('.download .jsStatus').innerHTML = '（运行中...）'
+    qs('.download .remark').innerHTML = `运行结果：`
+    qs('.download .remark').className = 'remark'
     currentTa = qs('#logDownload')
     getLog(true)
     const {successArr, errorArr, notFoundArr, filename} = await ipcRenderer.invoke('puppeteer.downloadInvoice', {invoiceArr, draftPath: config.download.draftPath});
