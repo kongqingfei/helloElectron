@@ -107,6 +107,7 @@ async function downloadInvoice (opts) {
     return prev;
   }, [])
   log.info(`未找到合同：${JSON.stringify(notFoundArr)}`)
+  await pageDraft.close()
   return {invoiceArr, successArr, errorArr, notFoundArr, filename}
 }
 

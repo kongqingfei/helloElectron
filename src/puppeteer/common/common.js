@@ -5,7 +5,7 @@ module.exports = {
   createPage: async function(opts) {
     const browser = await puppeteer.launch(Object.assign({
       // "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-      executablePath: opts.chromePath,
+      executablePath: opts.chromePath || "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
       // headless: false,
       args: ['--start-maximized'],
       // slowMo: 30,

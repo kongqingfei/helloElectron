@@ -84,13 +84,54 @@
     </div>
     <div class="remark">运行结果：</div>
   </div>
+  <div class="contractSubmit module" style="display: none;">
+    <div class="title">
+      <div class="txt">销售合同提交</div>
+      <div class="status jsStatus">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn jsDoContractSubmit">点击开始</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
+      </div>
+      <div class="logWrap">
+        <textarea class="log" id="logContractSubmit"></textarea>
+      </div>
+    </div>
+    <div class="remark">运行结果：</div>
+  </div>
+  <div class="invoiceSubmit module">
+    <div class="title">
+      <div class="txt">发票提交（提给财务）</div>
+      <div class="status jsStatus">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn jsDoInvoiceSubmit">点击开始</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
+      </div>
+      <div class="logWrap">
+        <textarea class="log" id="logInvoiceSubmit"></textarea>
+      </div>
+    </div>
+    <div class="remark">运行结果：</div>
+  </div>
   <script src="index.js"></script>
-  <!-- <script>
-    const {remote} = require('electron')
-    remote.dialog.showErrorBox('An Error Message', 'Demonstrating an error message.')
-//     const app = require('electron').remote.app
-// console.log(remote)
-    document.querySelector('.jsLogin').innerHTML = 'test'
-  </script> -->
 </body>
 </html>

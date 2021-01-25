@@ -141,6 +141,86 @@ function bindEvent() {
       qs('.download .remark').className = 'remark error'
     }
   })
+  // 合同提交
+  qs('.jsDoContractSubmit').addEventListener('click', async () => {
+    if (!isLogin) {
+      return await toast('请先登录')
+    }
+    const invoiceArr = (qs('.contractSubmit .jsInvoiceAll').value || '').split('\n').reduce((prev, cur) => {
+      const temp = cur.trim()
+      if (temp) {
+        prev.push(temp)
+      }
+      return prev
+    }, [])
+    if (invoiceArr.length === 0) {
+      return await toast('请先录入待处理合同号')
+    }
+    qs('.contractSubmit .jsInvoiceSuccess').value = ''
+    qs('.contractSubmit .jsNumSuccess').innerHTML = `共0个`
+    qs('.contractSubmit .jsInvoiceError').value = ''
+    qs('.contractSubmit .jsNumError').innerHTML = `共0个`
+    qs('.contractSubmit .jsStatus').innerHTML = '（运行中...）'
+    qs('.contractSubmit .remark').innerHTML = `运行结果：`
+    qs('.contractSubmit .remark').className = 'remark'
+    currentTa = qs('#logContractSubmit')
+    getLog(true)
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitContract', {invoiceArr});
+    qs('.contractSubmit .jsNumAll').innerHTML = `共${invoiceArr.length}个`
+    qs('.contractSubmit .jsInvoiceSuccess').value = successArr.join('\n')
+    qs('.contractSubmit .jsNumSuccess').innerHTML = `共${successArr.length}个`
+    qs('.contractSubmit .jsInvoiceError').value = errorArr.join('\n')
+    qs('.contractSubmit .jsNumError').innerHTML = `共${errorArr.length}个`
+    stopLog()
+    qs('.contractSubmit .jsStatus').innerHTML = '（当前未运行）'
+    if (errorArr.length === 0) {
+      qs('.contractSubmit .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.contractSubmit .remark').className = 'remark success'
+    } else {
+      qs('.contractSubmit .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.contractSubmit .remark').className = 'remark error'
+    }
+  })
+  // 发票提交
+  qs('.jsDoInvoiceSubmit').addEventListener('click', async () => {
+    if (!isLogin) {
+      return await toast('请先登录')
+    }
+    const invoiceArr = (qs('.invoiceSubmit .jsInvoiceAll').value || '').split('\n').reduce((prev, cur) => {
+      const temp = cur.trim()
+      if (temp) {
+        prev.push(temp)
+      }
+      return prev
+    }, [])
+    if (invoiceArr.length === 0) {
+      return await toast('请先录入待处理合同号')
+    }
+    qs('.invoiceSubmit .jsInvoiceSuccess').value = ''
+    qs('.invoiceSubmit .jsNumSuccess').innerHTML = `共0个`
+    qs('.invoiceSubmit .jsInvoiceError').value = ''
+    qs('.invoiceSubmit .jsNumError').innerHTML = `共0个`
+    qs('.invoiceSubmit .jsStatus').innerHTML = '（运行中...）'
+    qs('.invoiceSubmit .remark').innerHTML = `运行结果：`
+    qs('.invoiceSubmit .remark').className = 'remark'
+    currentTa = qs('#logInvoiceSubmit')
+    getLog(true)
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitInvoice', {invoiceArr});
+    qs('.invoiceSubmit .jsNumAll').innerHTML = `共${invoiceArr.length}个`
+    qs('.invoiceSubmit .jsInvoiceSuccess').value = successArr.join('\n')
+    qs('.invoiceSubmit .jsNumSuccess').innerHTML = `共${successArr.length}个`
+    qs('.invoiceSubmit .jsInvoiceError').value = errorArr.join('\n')
+    qs('.invoiceSubmit .jsNumError').innerHTML = `共${errorArr.length}个`
+    stopLog()
+    qs('.invoiceSubmit .jsStatus').innerHTML = '（当前未运行）'
+    if (errorArr.length === 0) {
+      qs('.invoiceSubmit .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.invoiceSubmit .remark').className = 'remark success'
+    } else {
+      qs('.invoiceSubmit .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.invoiceSubmit .remark').className = 'remark error'
+    }
+  })
 }
 function getLog(doNext) {
   ipcRenderer.invoke('log.getLog').then((logArr) => {

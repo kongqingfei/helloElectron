@@ -1,10 +1,10 @@
-.invoice .ta, .download .ta {
+.module .ta{
   height:140px;
 }
-.invoice .logWrap, .download .logWrap {
+.module .logWrap {
   width:100%;
 }
-.invoice .log, .download .log {
+.module .log {
   width:100%;
   background:#000;
   color:#fff;
