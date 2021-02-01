@@ -51,7 +51,7 @@ async function makeInvoice(opts) {
           await pageInvoice.click('form[name=invoiceForm] .gerSub .subSave')
           await pageInvoice.waitForSelector('select[ng-model="sdef.isfpandxsht"]')
           await pageInvoice.select('select[ng-model="sdef.isfpandxsht"]', '是'); // 单选择器
-          await pageInvoice.click('form[name=mkinvoiceForm] .gerSub .subSave')
+          await pageInvoice.click('form[name=mkinvoiceForm] > .gerSub .subSave')
           await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
           await pageInvoice.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
           const successDisplay = await pageInvoice.$eval('.sweet-alert > .sa-success', el => el.style.display);
