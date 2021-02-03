@@ -4,7 +4,7 @@ const log = require('../../utils/logUtil')
 async function submitInvoice(opts) {
   const { browser, page, invoiceArr } = opts
   const start = Date.now();
-  log.info(`----提交发票自动化任务开始----`)
+  log.info(`----提交审批自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
   await page.waitForSelector('#table > tbody > tr')
   await page.click("[ng-click=\"getData('mybegins')\"]")
@@ -115,7 +115,7 @@ async function submitInvoice(opts) {
   let filename = ""
   log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
   await getFromSearch(invoiceArr)
-  log.info(`----提交发票自动化任务结束----总耗时${Date.now() - start}----`)
+  log.info(`----提交审批自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}`)
   log.info(`成功合同：${JSON.stringify(successArr)}`)
   log.info(`失败合同：${JSON.stringify(errorArr)}`)

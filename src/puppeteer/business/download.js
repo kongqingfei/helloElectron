@@ -8,7 +8,7 @@ const log = require('../../utils/logUtil')
 async function downloadInvoice (opts) {
   const {browser, page, invoiceArr, draftPath} = opts
   const start = Date.now();
-  log.info(`----下载草稿excel自动化任务开始----`)
+  log.info(`----下载草稿自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
   await page.waitForSelector('#table > tbody > tr')
   await page.click("[ng-click=\"getData('mybegins')\"]")
@@ -96,7 +96,7 @@ async function downloadInvoice (opts) {
     }, []))
     await doDownload()
   }
-  log.info(`----下载草稿excel自动化任务结束----总耗时${Date.now() - start}----`)
+  log.info(`----下载草稿自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}`)
   log.info(`成功合同：${JSON.stringify(successArr)}`)
   log.info(`失败合同：${JSON.stringify(errorArr)}`)

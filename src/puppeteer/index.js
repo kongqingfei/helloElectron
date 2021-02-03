@@ -5,7 +5,7 @@ const log = require('../utils/logUtil')
 async function makeInvoice(opts) {
   const {browser, page, invoiceArr} = opts
   const start = Date.now();
-  log.info(`----提交到草稿自动化任务开始----`)
+  log.info(`----做发票草稿自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/hold/contractOrder');
   async function submitOne(invoiceNo) {
     log.info(`----${invoiceNo}合同处理开始----`)
@@ -37,6 +37,7 @@ async function makeInvoice(opts) {
       await pageInvoice.setViewport({width: screenWidth, height: screenHeight});
       // 开票页操作的提交
       await pageInvoice.waitForSelector('select[name=ZFPLX]')
+      await pageInvoice.waitForSelector('select[name=ZFPLX] option[value="string:FP31"]')
       if (taxStr === '税率13%') {
         await pageInvoice.select('select[name=ZFPLX]', 'string:FP31'); // 单选择器
       } else if (taxStr === '税率6%') {
@@ -60,6 +61,23 @@ async function makeInvoice(opts) {
             // 关闭页面
             log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
             successArr.push(invoiceNo)
+          } else if (dialogTxt.includes('请推送')) {
+            await pageInvoice.waitFor(1000);
+            await pageInvoice.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+            await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+            await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+            await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
+            await pageInvoice.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
+            const successDisplayIn = await pageInvoice.$eval('.sweet-alert > .sa-success', el => el.style.display);
+            const dialogTxtIn = await pageInvoice.$eval('.sweet-alert > h2', el => el.innerHTML);
+            if (successDisplayIn === 'block') {
+              // 关闭页面
+              log.info(`----${invoiceNo}合同处理成功----${dialogTxtIn}----`)
+              successArr.push(invoiceNo)
+            } else {
+              log.error(`----${invoiceNo}合同处理失败----${dialogTxtIn}----`)
+              errorArr.push(invoiceNo)
+            }
           } else {
             log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
             errorArr.push(invoiceNo)
@@ -98,8 +116,8 @@ async function makeInvoice(opts) {
       throw e
     }
     // 操作完成关闭当前页
-    await pageInvoice.close();
-    await page.bringToFront()
+    // await pageInvoice.close();
+    // await page.bringToFront()
   }
   const successArr = []
   const errorArr = []
@@ -135,7 +153,7 @@ async function makeInvoice(opts) {
   tempArr.forEach((item) => {
     errorArr.push(item)
   })
-  log.info(`----提交到草稿自动化任务结束----总耗时${Date.now() - start}----`)
+  log.info(`----做发票草稿自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}，共${invoiceArr.length}个`)
   log.info(`成功合同：${JSON.stringify(successArr)}，共${successArr.length}个`)
   log.info(`失败合同：${JSON.stringify(errorArr)}，共${errorArr.length}个`)

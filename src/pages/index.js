@@ -58,7 +58,7 @@ function bindEvent() {
     
     isLogin = true
   })
-  // 发票提交草稿
+  // 做发票草稿
   qs('.jsDoInvoice').addEventListener('click', async () => {
     if (!isLogin) {
       return await toast('请先登录')
