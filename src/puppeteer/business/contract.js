@@ -4,7 +4,7 @@ const log = require('../../utils/logUtil')
 async function submitContract(opts) {
   const {browser, page, invoiceArr, nextPerson='王丽娟'} = opts
   const start = Date.now();
-  log.info(`----销售合同提交自动化任务开始----`)
+  log.info(`----提交销售合同自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
   await page.waitForSelector('#table > tbody > tr')
   // 计算行号
@@ -56,11 +56,26 @@ async function submitContract(opts) {
     await pageOne.waitForSelector('.danger[ng-if="agreeBtn"]')
     await pageOne.click('.danger[ng-if="agreeBtn"]')
     await pageOne.waitForSelector('select[ng-model="nextApply"]')
-    await pageOne.waitForSelector('select[ng-model="nextApply"] option[value=2]')
-    await pageOne.select('select[ng-model="nextApply"]', nextPerson); // 单选择器
-    // await pageOne.click('button[ng-click="applyFn(nextApply,CNBM_MULTI.corp)"]')
+    await pageOne.waitForSelector('select[ng-model="nextApply"] option[value="2"]')
+    await pageOne.select('select[ng-model="nextApply"]', "2"); // 单选择器
+    await pageOne.click('button[ng-click="applyFn(nextApply,CNBM_MULTI.corp)"]')
     // todo 成功的判断
+    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
+    await pageOne.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
+    const successDisplay = await pageOne.$eval('.sweet-alert > .sa-success', el => el.style.display);
+    const dialogTxt = await pageOne.$eval('.sweet-alert > h2', el => el.innerHTML);
+    if (successDisplay === 'block') {
+      // 关闭页面
+      log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
+      successArr.push(invoiceNo)
+    } else {
+      log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
+      errorArr.push(invoiceNo)
+    }
     // todo 成功之后关闭页面
+    await pageOne.close()
   }
 
   // 从首页查找合同id号
@@ -81,6 +96,7 @@ async function submitContract(opts) {
           return el.href
         })
         await submitOne(href, tempNo)
+        await pageContract.bringToFront()
       }
     }
   }
@@ -97,6 +113,7 @@ async function submitContract(opts) {
         return el.href
       })
       await submitOne(href, invoiceNo)
+      await pageContract.bringToFront()
       await pageContract.click('[role="dialog"] [title="Close"]')
     }
   }
@@ -114,7 +131,7 @@ async function submitContract(opts) {
       return prev;
     }, []))
   }
-  log.info(`----销售合同提交自动化任务结束----总耗时${Date.now() - start}----`)
+  log.info(`----提交销售合同自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}`)
   log.info(`成功合同：${JSON.stringify(successArr)}`)
   log.info(`失败合同：${JSON.stringify(errorArr)}`)
