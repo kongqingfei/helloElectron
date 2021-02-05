@@ -39,12 +39,12 @@ async function submitContract(opts) {
     })
     if (projectName === '分销') {
       await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '固定模式'); // 单选择器
-    } else if (projectName === '项目') {
+    } else { // 非分销全部是修复模式
+    // } else if (projectName === '项目') {
       await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
-    } else { // 不属于分销和项目类型
-      log.error(`----${invoiceNo}合同处理失败----合同类型是${projectName}，不是分销和项目----`)
-      errorArr.push(invoiceNo)
-      return
+      // log.error(`----${invoiceNo}合同处理失败----合同类型是${projectName}，不是分销和项目----`)
+      // errorArr.push(invoiceNo)
+      // return
     }
     await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
     await pageOne.waitForSelector(`[lang="zh-cn"]`)
