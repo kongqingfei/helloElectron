@@ -1,6 +1,6 @@
 {
   "name": "helloElectron",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "rain fly",
   "main": "./src/index.js",
   "scripts": {
