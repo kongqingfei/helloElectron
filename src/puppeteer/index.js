@@ -61,7 +61,7 @@ async function makeInvoice(opts) {
             // 关闭页面
             log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
             successArr.push(invoiceNo)
-          } else if (dialogTxt.includes('请推送')) {
+          } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
             await pageInvoice.waitFor(1000);
             await pageInvoice.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
             await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
