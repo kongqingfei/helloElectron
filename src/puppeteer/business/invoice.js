@@ -2,7 +2,7 @@ const { screenWidth, screenHeight } = require('../config')
 const log = require('../../utils/logUtil')
 
 async function submitInvoice(opts) {
-  const { browser, page, invoiceArr } = opts
+  const { browser, page, invoiceArr, realAmount0=false } = opts
   const start = Date.now();
   log.info(`----提交审批自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
@@ -39,6 +39,16 @@ async function submitInvoice(opts) {
     await pageOne.waitForSelector('[ng-model="sdef.XBLNR"]')
     await pageOne.waitForFunction(selector => document.querySelector(selector).value ? true : false, {}, '[ng-model="sdef.XBLNR"]');
     await pageOne.waitForSelector('[ng-repeat="jhdmxArrlist in jhdmxArr"] > tbody > tr')
+    // todo
+    if (realAmount0) { // 将申请实际开票金额改为0
+      await pageOne.waitForSelector('[name="real_amount"]')
+      await pageOne.focus('[name="real_amount"]')
+      await pageOne.keyboard.down('Control')
+      await pageOne.keyboard.press('a')
+      await pageOne.keyboard.up('Control')
+      await pageOne.keyboard.press('Backspace')
+      await pageOne.type('[name="real_amount"]', "0")
+    }
     await pageOne.waitForSelector('.subApply')
     await pageOne.click('.subApply')
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');

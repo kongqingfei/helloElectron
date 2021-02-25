@@ -205,7 +205,7 @@ function bindEvent() {
     qs('.invoiceSubmit .remark').className = 'remark'
     currentTa = qs('#logInvoiceSubmit')
     getLog(true)
-    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitInvoice', {invoiceArr});
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitInvoice', {invoiceArr, realAmount0: qs('.jsRealAmount0').checked});
     qs('.invoiceSubmit .jsNumAll').innerHTML = `共${invoiceArr.length}个`
     qs('.invoiceSubmit .jsInvoiceSuccess').value = successArr.join('\n')
     qs('.invoiceSubmit .jsNumSuccess').innerHTML = `共${successArr.length}个`
