@@ -33,26 +33,28 @@ async function submitContract(opts) {
     await pageOne.bringToFront()
     await pageOne.setViewport({width: screenWidth, height: screenHeight});
     await pageOne.goto(href)
-    await pageOne.waitForSelector(`select[ng-model="ORDER_DATA.contractbase.receivabletype"]`)
-    const projectName = await pageOne.$eval('[ng-show="ht.activeTab == 1"] > .viewTable > ul:nth-child(2) > li:nth-child(10) > span', (el) => {
-      return el.innerHTML
+    await pageOne.waitForSelector(`.generNav > li`)
+    const firstCls = await pageOne.$eval('.generNav > li', (el) => {
+      return el.className
     })
-    if (projectName === '分销') {
-      await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '固定模式'); // 单选择器
-    } else { // 非分销全部是修复模式
-    // } else if (projectName === '项目') {
-      await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
-      // log.error(`----${invoiceNo}合同处理失败----合同类型是${projectName}，不是分销和项目----`)
-      // errorArr.push(invoiceNo)
-      // return
+    if (firstCls === 'active') { // 在订单信息标签页，需要设置项目类型和日期
+      await pageOne.waitForSelector(`select[ng-model="ORDER_DATA.contractbase.receivabletype"]`)
+      const projectName = await pageOne.$eval('[ng-show="ht.activeTab == 1"] > .viewTable > ul:nth-child(2) > li:nth-child(10) > span', (el) => {
+        return el.innerHTML
+      })
+      if (projectName === '分销') {
+        await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '固定模式'); // 单选择器
+      } else { // 非分销全部是修复模式
+        await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
+      }
+      await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
+      await pageOne.waitForSelector(`[lang="zh-cn"]`)
+      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
+      const elementHandle = await pageOne.$('iframe');
+      const frame = await elementHandle.contentFrame();
+      await frame.waitForSelector('#dpTodayInput');
+      await frame.click('#dpTodayInput')
     }
-    await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
-    await pageOne.waitForSelector(`[lang="zh-cn"]`)
-    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
-    const elementHandle = await pageOne.$('iframe');
-    const frame = await elementHandle.contentFrame();
-    await frame.waitForSelector('#dpTodayInput');
-    await frame.click('#dpTodayInput')
     await pageOne.waitForSelector('.danger[ng-if="agreeBtn"]')
     await pageOne.click('.danger[ng-if="agreeBtn"]')
     await pageOne.waitForSelector('select[ng-model="nextApply"]')
