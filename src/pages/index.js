@@ -40,6 +40,18 @@ function bindEvent() {
       }
     })
   })
+  // 选择合同上传文件路径
+  qs('.contractUpload .jsPathSelect').addEventListener('click', () => {
+    remote.dialog.showOpenDialog(remote.getCurrentWindow(), { properties: ['openDirectory'] }).then((res) => {
+      const {canceled, filePaths} = res;
+      if (!canceled) {
+        qs('.contractUpload .jsPath').innerHTML = filePaths[0]
+        config.contract = config.contract || {}
+        config.contract.contractPath = filePaths[0]
+        ipcRenderer.send('setConfigValue', {contract: config.contract})
+      }
+    })
+  })
   // 登录
   qs('.jsLogin').addEventListener('click', async () => {
     if (!config.chromePath) {
@@ -139,6 +151,49 @@ function bindEvent() {
     } else {
       qs('.download .remark').innerHTML = `运行结果：未找到可下载草稿`
       qs('.download .remark').className = 'remark error'
+    }
+  })
+  // 合同上传
+  qs('.jsDoContractUpload').addEventListener('click', async () => {
+    if (!isLogin) {
+      return await toast('请先登录')
+    }
+    if (!config.contract || !config.contract.contractPath) {
+      return await toast('请先设置合同文件路径')
+    }
+    const invoiceArr = (qs('.contractUpload .jsInvoiceAll').value || '').split('\n').reduce((prev, cur) => {
+      const temp = cur.trim()
+      if (temp) {
+        prev.push(temp)
+      }
+      return prev
+    }, [])
+    if (invoiceArr.length === 0) {
+      return await toast('请先录入待处理合同号')
+    }
+    qs('.contractUpload .jsInvoiceSuccess').value = ''
+    qs('.contractUpload .jsNumSuccess').innerHTML = `共0个`
+    qs('.contractUpload .jsInvoiceError').value = ''
+    qs('.contractUpload .jsNumError').innerHTML = `共0个`
+    qs('.contractUpload .jsStatus').innerHTML = '（运行中...）'
+    qs('.contractUpload .remark').innerHTML = `运行结果：`
+    qs('.contractUpload .remark').className = 'remark'
+    currentTa = qs('#logContractUpload')
+    getLog(true)
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.uploadContract', {invoiceArr, contractPath: config.contract.contractPath});
+    qs('.contractUpload .jsNumAll').innerHTML = `共${invoiceArr.length}个`
+    qs('.contractUpload .jsInvoiceSuccess').value = successArr.join('\n')
+    qs('.contractUpload .jsNumSuccess').innerHTML = `共${successArr.length}个`
+    qs('.contractUpload .jsInvoiceError').value = errorArr.join('\n')
+    qs('.contractUpload .jsNumError').innerHTML = `共${errorArr.length}个`
+    stopLog()
+    qs('.contractUpload .jsStatus').innerHTML = '（当前未运行）'
+    if (errorArr.length === 0 && successArr.length > 0) {
+      qs('.contractUpload .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.contractUpload .remark').className = 'remark success'
+    } else {
+      qs('.contractUpload .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.contractUpload .remark').className = 'remark error'
     }
   })
   // 合同提交
@@ -244,11 +299,14 @@ function stopLog() {
   getLog()
 }
 function init() {
-  const {login, download={}, chromePath} = config
+  const {login, download={}, chromePath, contract={}} = config
   qs('#name').value = login.name
   qs('#password').value = login.password
   if (download.draftPath) {
     qs('.download .jsPath').innerHTML = download.draftPath
+  }
+  if (contract.contractPath) {
+    qs('.contractUpload .jsPath').innerHTML = contract.contractPath
   }
   if (chromePath) {
     qs('.login .jsPath').innerHTML = chromePath

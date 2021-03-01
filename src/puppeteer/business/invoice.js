@@ -49,6 +49,12 @@ async function submitInvoice(opts) {
       await pageOne.keyboard.press('Backspace')
       await pageOne.type('[name="real_amount"]', "0")
     }
+    // 点一下刷新
+    await pageOne.waitForSelector('a[ng-click="refresh()"]')
+    await pageOne.click('a[ng-click="refresh()"]')
+    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+
     await pageOne.waitForSelector('.subApply')
     await pageOne.click('.subApply')
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
@@ -67,7 +73,7 @@ async function submitInvoice(opts) {
   }
 
   // 从首页查找合同id号
-  async function getFromFirstPage(invoiceArr) {
+  async function getFromFirstPage(invoiceArr, onlyDel) {
     // 合同号s
     const invoiceNos = await pageDraft.$$eval('table.orangestyle.table > tbody > tr.ng-scope > td:nth-child(7)', (els) => {
       const arr = []
@@ -79,7 +85,7 @@ async function submitInvoice(opts) {
     for (let ind = 0; ind < invoiceNos.length; ind++) {
       const no = invoiceNos[ind]
       const tempNo = no.split('-')[0]
-      if (invoiceArr.includes(tempNo) && !successArr.includes(tempNo)) { // 只取最新的
+      if (invoiceArr.includes(tempNo) && !successArr.includes(tempNo) && !onlyDel) { // 只取最新的
         const href = await pageDraft.$eval('table.orangestyle.table > tbody > tr.ng-scope > td:nth-child(3) > a', (el) => {
           return el.href;
         })
@@ -117,6 +123,8 @@ async function submitInvoice(opts) {
       await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
       await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
       await getFromFirstPage([invoiceNo])
+      // 根据合同id，重新查询当前列表，删除多余合同
+      await getFromFirstPage([invoiceNo], true)
     }
   }
   const successArr = []

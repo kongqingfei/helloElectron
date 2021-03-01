@@ -14,10 +14,10 @@
   margin-top:5px;
   box-sizing: border-box;
 }
-.download .pathWrap, .login .pathWrap {
+.module .pathWrap {
   margin-top: 5px;
   display: flex;
 }
-.download .pathWrap .btn, .login .pathWrap .btn {
+.module .pathWrap .btn {
   margin-left: 5px;
 }

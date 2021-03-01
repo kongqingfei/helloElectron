@@ -1,7 +1,7 @@
 const {createPage, login} = require('../puppeteer/common/common')
 const {makeInvoice} = require('../puppeteer/index')
 const {downloadInvoice} = require('../puppeteer/business/download')
-const {submitContract} = require('../puppeteer/business/contract')
+const {submitContract, uploadContract} = require('../puppeteer/business/contract')
 const {submitInvoice} = require('../puppeteer/business/invoice')
 
 const ext = {
@@ -9,6 +9,7 @@ const ext = {
   page: null,
   isLogin: false,
   init: async (opts) => {
+    // opts.headless = false
     const {browser, page} = await createPage(opts)
     ext.browser = browser
     ext.browser.on('disconnected', async () => { // 被关闭了立马重新生成browser
@@ -42,6 +43,13 @@ const ext = {
   },
   submitContract: async (opts) => {
     return await submitContract({
+      browser: ext.browser,
+      page: ext.page,
+      ...opts,
+    })
+  },
+  uploadContract: async (opts) => {
+    return await uploadContract({
       browser: ext.browser,
       page: ext.page,
       ...opts,

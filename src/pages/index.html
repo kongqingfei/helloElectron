@@ -57,7 +57,7 @@
   </div>
   <div class="download module">
     <div class="title">
-      <div class="txt">下载草稿</div>
+      <div class="txt">下载发票草稿</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoDownload">点击开始</button>
@@ -86,7 +86,7 @@
   </div>
   <div class="invoiceSubmit module">
     <div class="title">
-      <div class="txt">提交审批</div>
+      <div class="txt">发票提交审批</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoInvoiceSubmit">点击开始</button>
@@ -105,6 +105,35 @@
       </div>
       <div class="logWrap">
         <textarea class="log" id="logInvoiceSubmit"></textarea>
+      </div>
+    </div>
+    <div class="remark">运行结果：</div>
+  </div>
+  <div class="contractUpload module">
+    <div class="title">
+      <div class="txt">上传销售合同</div>
+      <div class="status jsStatus">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn jsDoContractUpload">点击开始</button>
+      </div>
+    </div>
+    <div class="pathWrap">
+      <div class="label">文件路径：</div>
+      <div class="path jsPath"></div>
+      <button class="btn jsPathSelect">点击选择</button>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
+      </div>
+      <div class="logWrap">
+        <textarea class="log" id="logContractUpload"></textarea>
       </div>
     </div>
     <div class="remark">运行结果：</div>

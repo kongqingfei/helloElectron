@@ -1,4 +1,5 @@
 const {screenWidth, screenHeight} = require('../config')
+const fs = require('fs');
 const log = require('../../utils/logUtil')
 
 async function submitContract(opts) {
@@ -147,6 +148,94 @@ async function submitContract(opts) {
   return {invoiceArr, successArr, errorArr, notFoundArr}
 }
 
+async function uploadContract(opts) {
+  const {browser, page, invoiceArr, contractPath} = opts
+  const start = Date.now();
+  log.info(`----上传销售合同自动化任务开始----`)
+  await page.goto('http://cdwp.cnbmxinyun.com/#/hold/docManageUpload')
+  await page.waitForSelector('button[value="批量上传文件"]')
+  await page.waitForSelector('input[value="批量上传文件"]')
+  // await page.click('button[value="批量上传文件"]')
+  const uploadPdf = await page.waitForSelector('input[value="批量上传文件"]')
+
+  // 上传桌面的pdf文件
+  async function selectPdf(invoiceArr) {
+    for(let ind = 0; ind < invoiceArr.length; ind++) {
+      const invoiceNo = invoiceArr[ind]
+      const filename = `${contractPath}\\销售_${invoiceNo}_${invoiceNo.includes('-') ? '补充协议' : '合同'}.pdf`
+      const filename2 = `${contractPath}\\销售_${invoiceNo}_解除协议.pdf`
+      if (fs.existsSync(filename)) {
+        await uploadPdf.uploadFile(filename)
+        successArr.push(invoiceNo)
+      } else if (fs.existsSync(filename2)) {
+        await uploadPdf.uploadFile(filename2)
+        successArr.push(invoiceNo)
+      } else {
+        log.error(`----${invoiceNo}合同处理失败----${filename}文件未找到----`)
+        errorArr.push(invoiceNo)
+      }
+    }
+  }
+  // 选中已上传文件，确认提交
+  async function doUploadPdf() {
+    // 需要等待页面上的文件都上传成功了
+    await page.waitForFunction((selector, len) => document.querySelectorAll(selector).length === len, {}, '.addTable > .tab_data > .tab_body > tr', successArr.length);
+    const cksLen = await page.$$eval('.addTable > .tab_data > .tab_body > tr input[type="checkbox"]', els => els.length);
+    if (cksLen < successArr.length || cksLen === 0) {
+      log.error(`----有文件上传异常，请重新操作----`)
+      successArr = []
+      return
+    }
+    await page.$$eval('.addTable > .tab_data > .tab_body > tr input[type="checkbox"]', cks => {
+      for(let i = 0; i < cks.length; i++) {
+        cks[i].click()
+      }
+    });
+    await page.waitForSelector('button[type="submit"]')
+    await page.click('button[type="submit"]')
+    await page.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
+    await page.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
+    await page.waitFor(1000)
+    await page.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+    await page.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '.sweet-alert > .sa-warning');
+    await page.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert > .sa-success');
+    const successDisplay = await page.$eval('.sweet-alert > .sa-success', el => el.style.display);
+    const dialogTxt = await page.$eval('.sweet-alert > h2', el => el.innerHTML);
+    if (successDisplay === 'block') {
+      log.info(`----确认上传成功----${dialogTxt}----`)
+    } else {
+      log.error(`----确认上传失败----${dialogTxt}----`)
+      successArr = []
+    }
+  }
+  let successArr = []
+  const errorArr = []
+  let notFoundArr = []
+  const processIdArr = []
+  log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
+  await selectPdf(invoiceArr)
+  try {
+    await doUploadPdf()
+  } catch (e) {
+    log.error(e.stack);
+    log.error(`----未知异常----`)
+    successArr = []
+  }
+  log.info(`----上传销售合同自动化任务结束----总耗时${Date.now() - start}----`)
+  log.info(`全部合同：${JSON.stringify(invoiceArr)}`)
+  log.info(`成功合同：${JSON.stringify(successArr)}`)
+  log.info(`失败合同：${JSON.stringify(errorArr)}`)
+  notFoundArr = invoiceArr.reduce((prev, cur) => {
+    if (!successArr.includes(cur) && !errorArr.includes(cur)) {
+      prev.push(cur);
+    }
+    return prev;
+  }, [])
+  log.info(`未找到合同：${JSON.stringify(notFoundArr)}`)
+  return {invoiceArr, successArr, errorArr, notFoundArr}
+}
+
 module.exports = {
-  submitContract
+  submitContract,
+  uploadContract
 }
