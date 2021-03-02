@@ -64,7 +64,24 @@ async function submitInvoice(opts) {
     if (successDisplay === 'block') {
       log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
       successArr.push(invoiceNo)
-    } else {
+    } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
+      await pageOne.waitFor(1000);
+      await pageOne.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
+      await pageOne.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
+      const successDisplayIn = await pageOne.$eval('.sweet-alert > .sa-success', el => el.style.display);
+      const dialogTxtIn = await pageOne.$eval('.sweet-alert > h2', el => el.innerHTML);
+      if (successDisplayIn === 'block') {
+        // 关闭页面
+        log.info(`----${invoiceNo}合同处理成功----${dialogTxtIn}----`)
+        successArr.push(invoiceNo)
+      } else {
+        log.error(`----${invoiceNo}合同处理失败----${dialogTxtIn}----`)
+        errorArr.push(invoiceNo)
+      }
+    }else {
       log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
       errorArr.push(invoiceNo)
     }
