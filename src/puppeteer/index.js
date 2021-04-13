@@ -1,6 +1,7 @@
 const {screenWidth, screenHeight} = require('./config')
 const {getErrorMsg} = require('./utils/util');
 const log = require('../utils/logUtil')
+const os = require('os')
 
 async function makeInvoice(opts) {
   const {browser, page, invoiceArr} = opts
@@ -53,35 +54,48 @@ async function makeInvoice(opts) {
           await pageInvoice.waitForSelector('select[ng-model="sdef.isfpandxsht"]')
           await pageInvoice.select('select[ng-model="sdef.isfpandxsht"]', '是'); // 单选择器
           await pageInvoice.click('form[name=mkinvoiceForm] > .gerSub .subSave')
-          await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
-          await pageInvoice.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
-          const successDisplay = await pageInvoice.$eval('.sweet-alert > .sa-success', el => el.style.display);
-          const dialogTxt = await pageInvoice.$eval('.sweet-alert > h2', el => el.innerHTML);
-          if (successDisplay === 'block') {
-            // 关闭页面
-            log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
-            successArr.push(invoiceNo)
-          } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
-            await pageInvoice.waitFor(1000);
-            await pageInvoice.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
-            await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
-            await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+          async function dealResult() { // 处理最后的结果，弹窗可能会弹多个
             await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
             await pageInvoice.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
-            const successDisplayIn = await pageInvoice.$eval('.sweet-alert > .sa-success', el => el.style.display);
-            const dialogTxtIn = await pageInvoice.$eval('.sweet-alert > h2', el => el.innerHTML);
-            if (successDisplayIn === 'block') {
+            const successDisplay = await pageInvoice.$eval('.sweet-alert > .sa-success', el => el.style.display);
+            const dialogTxt = await pageInvoice.$eval('.sweet-alert > h2', el => el.innerHTML);
+            if (successDisplay === 'block') {
               // 关闭页面
-              log.info(`----${invoiceNo}合同处理成功----${dialogTxtIn}----`)
+              log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
               successArr.push(invoiceNo)
+            } else if (dialogTxt.includes('存在含税金额为负数的行项目，请调整申请实际开票金额=0后提交')) {
+              await pageInvoice.waitFor(1000);
+              await pageInvoice.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+              await pageInvoice.waitForSelector('[name="real_amount"]')
+              await pageInvoice.focus('[name="real_amount"]')
+              if (os.type() === 'Darwin') { // mac系统
+                for (let i = 0; i < 30; i++) {
+                  await pageInvoice.keyboard.down('ArrowRight')
+                }
+                for (let i = 0; i < 30; i++) {
+                  await pageInvoice.keyboard.down('Backspace')
+                }
+              } else {
+                await pageInvoice.keyboard.down('Control')
+                await pageInvoice.keyboard.press('a')
+                await pageInvoice.keyboard.up('Control')
+                await pageInvoice.keyboard.press('Backspace')
+              }
+              await pageInvoice.type('[name="real_amount"]', "0")
+              await pageInvoice.click('form[name=mkinvoiceForm] > .gerSub .subSave')
+              await dealResult()
+            } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
+              await pageInvoice.waitFor(1000);
+              await pageInvoice.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+              await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+              await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+              await dealResult()
             } else {
-              log.error(`----${invoiceNo}合同处理失败----${dialogTxtIn}----`)
+              log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
               errorArr.push(invoiceNo)
             }
-          } else {
-            log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
-            errorArr.push(invoiceNo)
           }
+          await dealResult()
         }
         await pageInvoice.waitForSelector('a[ng-click="VBELNSelect(recode)"]')
         await pageInvoice.click('a[ng-click="VBELNSelect(recode)"]')
@@ -91,7 +105,11 @@ async function makeInvoice(opts) {
         ])
         if (await pageInvoice.$eval('.sweet-alert', el => el.style.display === 'block')) { // 失败
           await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert > .sa-warning');
-          log.error(`----${invoiceNo}合同处理失败----${await getErrorMsg(pageInvoice)}----`)
+          const errMsgVBELNSelect = await getErrorMsg(pageInvoice)
+          if (/销售订单1000\d+存在项目费用物料未放货，请完全处理后再开票。/g.test(errMsgVBELNSelect)) {
+            orderArr.push(errMsgVBELNSelect.match(/(\d+)/g)[0])
+          }
+          log.error(`----${invoiceNo}合同处理失败----${errMsgVBELNSelect}----`)
           errorArr.push(invoiceNo)
         } else {
           await afterVBELNSelect()
@@ -116,12 +134,13 @@ async function makeInvoice(opts) {
       throw e
     }
     // 操作完成关闭当前页
-    // await pageInvoice.close();
-    // await page.bringToFront()
+    await pageInvoice.close();
+    await page.bringToFront()
   }
   const successArr = []
   const errorArr = []
   const waitArr = []
+  const orderArr = []
   log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
   for(let i = 0; i < invoiceArr.length; i++) {
     try {
@@ -157,7 +176,7 @@ async function makeInvoice(opts) {
   log.info(`全部合同：${JSON.stringify(invoiceArr)}，共${invoiceArr.length}个`)
   log.info(`成功合同：${JSON.stringify(successArr)}，共${successArr.length}个`)
   log.info(`失败合同：${JSON.stringify(errorArr)}，共${errorArr.length}个`)
-  return {invoiceArr, successArr, errorArr}
+  return {invoiceArr, successArr, errorArr, orderArr}
 }
 
 module.exports = {

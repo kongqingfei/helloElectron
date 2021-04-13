@@ -89,17 +89,21 @@ function bindEvent() {
     qs('.invoice .jsNumSuccess').innerHTML = `共0个`
     qs('.invoice .jsInvoiceError').value = ''
     qs('.invoice .jsNumError').innerHTML = `共0个`
+    qs('.invoice .jsInvoiceOrder').value = ''
+    qs('.invoice .jsNumOrder').innerHTML = `共0个`
     qs('.invoice .jsStatus').innerHTML = '（运行中...）'
     qs('.invoice .remark').innerHTML = `运行结果：`
     qs('.invoice .remark').className = 'remark'
     currentTa = qs('#logInvoice')
     getLog(true)
-    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.makeInvoice', {invoiceArr});
+    const {successArr, errorArr, orderArr} = await ipcRenderer.invoke('puppeteer.makeInvoice', {invoiceArr});
     qs('.invoice .jsNumAll').innerHTML = `共${invoiceArr.length}个`
     qs('.invoice .jsInvoiceSuccess').value = successArr.join('\n')
     qs('.invoice .jsNumSuccess').innerHTML = `共${successArr.length}个`
     qs('.invoice .jsInvoiceError').value = errorArr.join('\n')
     qs('.invoice .jsNumError').innerHTML = `共${errorArr.length}个`
+    qs('.invoice .jsInvoiceOrder').value = orderArr.join('\n')
+    qs('.invoice .jsNumOrder').innerHTML = `共${orderArr.length}个`
     stopLog()
     qs('.invoice .jsStatus').innerHTML = '（当前未运行）'
     if (errorArr.length === 0) {

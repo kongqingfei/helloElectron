@@ -31,7 +31,7 @@ body {
 .module .content .formItem.column {
   flex-direction: column;
   align-items: flex-start;
-  width:33%;
+  width:25%;
 }
 .module .remark {
   margin-top:5px;

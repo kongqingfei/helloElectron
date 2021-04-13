@@ -106,6 +106,7 @@ async function submitInvoice(opts) {
         const href = await pageDraft.$eval('table.orangestyle.table > tbody > tr.ng-scope > td:nth-child(3) > a', (el) => {
           return el.href;
         })
+        await pageDraft.waitFor(1000)
         await submitOne(href, tempNo)
         await pageDraft.bringToFront()
       } else if (ind > 0 && invoiceArr.includes(tempNo)) { // 删除多余发票

@@ -10,7 +10,7 @@ const ext = {
       fs.mkdirSync(dirPath)
     }
     if (!fs.existsSync(fileName)) {
-      fs.writeFileSync(fileName, '{"login": {"name": "zhaorun", "password": "zhaorun222"}}')
+      fs.writeFileSync(fileName, '{"login": {"name": "zhaorun", "password": "zhaorun612"}}')
     }
     return JSON.parse(fs.readFileSync(fileName))
   },
