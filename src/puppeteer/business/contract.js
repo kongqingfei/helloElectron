@@ -59,8 +59,8 @@ async function submitContract(opts) {
     await pageOne.waitForSelector('.danger[ng-if="agreeBtn"]')
     await pageOne.click('.danger[ng-if="agreeBtn"]')
     await pageOne.waitForSelector('select[ng-model="nextApply"]')
-    await pageOne.waitForSelector('select[ng-model="nextApply"] option[value="2"]')
-    await pageOne.select('select[ng-model="nextApply"]', "2"); // 单选择器
+    await pageOne.waitForSelector('select[ng-model="nextApply"] option[value="3"]')
+    await pageOne.select('select[ng-model="nextApply"]', "3"); // 单选择器
     await pageOne.click('button[ng-click="applyFn(nextApply,CNBM_MULTI.corp)"]')
     // todo 成功的判断
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
