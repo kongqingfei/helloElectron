@@ -56,6 +56,7 @@ async function submitInvoice(opts) {
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
 
     await pageOne.waitForSelector('.subApply')
+    await pageOne.waitFor(2000);
     await pageOne.click('.subApply')
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
     await pageOne.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
