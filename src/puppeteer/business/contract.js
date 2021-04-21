@@ -39,22 +39,25 @@ async function submitContract(opts) {
       return el.className
     })
     if (firstCls === 'active') { // 在订单信息标签页，需要设置项目类型和日期
-      await pageOne.waitForSelector(`select[ng-model="ORDER_DATA.contractbase.receivabletype"]`)
-      const projectName = await pageOne.$eval('[ng-show="ht.activeTab == 1"] > .viewTable > ul:nth-child(2) > li:nth-child(10) > span', (el) => {
-        return el.innerHTML
-      })
-      if (projectName === '分销') {
-        await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '固定模式'); // 单选择器
-      } else { // 非分销全部是修复模式
-        await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
+      const pageTitle = await pageOne.$eval('#pageTitle', (el) => el.innerHTML)
+      if (pageTitle !== '销售合同内容变更-审批详情') {
+        await pageOne.waitForSelector(`select[ng-model="ORDER_DATA.contractbase.receivabletype"]`)
+        const projectName = await pageOne.$eval('[ng-show="ht.activeTab == 1"] > .viewTable > ul:nth-child(2) > li:nth-child(10) > span', (el) => {
+          return el.innerHTML
+        })
+        if (projectName === '分销') {
+          await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '固定模式'); // 单选择器
+        } else { // 非分销全部是修复模式
+          await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
+        }
+        await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
+        await pageOne.waitForSelector(`[lang="zh-cn"]`)
+        await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
+        const elementHandle = await pageOne.$('iframe');
+        const frame = await elementHandle.contentFrame();
+        await frame.waitForSelector('#dpTodayInput');
+        await frame.click('#dpTodayInput')
       }
-      await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
-      await pageOne.waitForSelector(`[lang="zh-cn"]`)
-      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
-      const elementHandle = await pageOne.$('iframe');
-      const frame = await elementHandle.contentFrame();
-      await frame.waitForSelector('#dpTodayInput');
-      await frame.click('#dpTodayInput')
     }
     await pageOne.waitForSelector('.danger[ng-if="agreeBtn"]')
     await pageOne.click('.danger[ng-if="agreeBtn"]')
@@ -111,11 +114,17 @@ async function submitContract(opts) {
       await pageContract.waitForSelector('.genSearch table tr td:nth-child(1) input[ng-model="$parent.filter.key"]')
       await pageContract.type('.genSearch table tr td:nth-child(1) input[ng-model="$parent.filter.key"]', invoiceNo)
       await pageContract.click('.genSearch table tr td:nth-child(1) .searchbtn2')
-      await pageContract.waitForSelector(`[role="dialog"] .ui-grid-canvas .ui-grid-coluiGrid-0005 .ui-grid-cell-contents a`)
-      const href = await pageContract.$eval('[role="dialog"] .ui-grid-canvas .ui-grid-coluiGrid-0005 .ui-grid-cell-contents a', (el) => {
-        return el.href
-      })
-      await submitOne(href, invoiceNo)
+      try {
+        await pageContract.waitForSelector(`[role="dialog"] .ui-grid-canvas .ui-grid-coluiGrid-0005 .ui-grid-cell-contents a`)
+        const href = await pageContract.$eval('[role="dialog"] .ui-grid-canvas .ui-grid-coluiGrid-0005 .ui-grid-cell-contents a', (el) => {
+          return el.href
+        })
+        await submitOne(href, invoiceNo)
+      } catch(e) {
+        log.error(e.stack);
+        log.error(`----${invoiceNo}合同处理失败----合同未找到或未知异常----`)
+        errorArr.push(invoiceNo)
+      }
       await pageContract.bringToFront()
       await pageContract.click('[role="dialog"] [title="Close"]')
     }
