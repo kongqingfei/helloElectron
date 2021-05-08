@@ -3,6 +3,7 @@ const {makeInvoice} = require('../puppeteer/index')
 const {downloadInvoice} = require('../puppeteer/business/download')
 const {submitContract, uploadContract} = require('../puppeteer/business/contract')
 const {submitInvoice} = require('../puppeteer/business/invoice')
+const {submitCost} = require('../puppeteer/business/cost')
 
 const ext = {
   browser: null,
@@ -57,6 +58,13 @@ const ext = {
   },
   submitInvoice: async (opts) => {
     return await submitInvoice({
+      browser: ext.browser,
+      page: ext.page,
+      ...opts,
+    })
+  },
+  submitCost: async (opts) => {
+    return await submitCost({
       browser: ext.browser,
       page: ext.page,
       ...opts,

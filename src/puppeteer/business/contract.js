@@ -171,8 +171,8 @@ async function uploadContract(opts) {
   async function selectPdf(invoiceArr) {
     for(let ind = 0; ind < invoiceArr.length; ind++) {
       const invoiceNo = invoiceArr[ind]
-      const filename = `${contractPath}\\销售_${invoiceNo}_${invoiceNo.includes('-') ? '补充协议' : '合同'}.pdf`
-      const filename2 = `${contractPath}\\销售_${invoiceNo}_解除协议.pdf`
+      const filename = `${contractPath}/销售_${invoiceNo}_${invoiceNo.includes('-') ? '补充协议' : '合同'}.pdf`
+      const filename2 = `${contractPath}/销售_${invoiceNo}_解除协议.pdf`
       if (fs.existsSync(filename)) {
         await uploadPdf.uploadFile(filename)
         successArr.push(invoiceNo)

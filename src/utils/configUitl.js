@@ -1,8 +1,8 @@
 const os = require('os')
 const fs = require('fs')
 const homedir = os.homedir()
-const dirPath = homedir + '\\.rainfly'
-const fileName = dirPath + '\\config.json'
+const dirPath = homedir + '/.rainfly'
+const fileName = dirPath + '/config.json'
 
 const ext = {
   readConfig: () => {

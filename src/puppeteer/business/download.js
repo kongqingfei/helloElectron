@@ -80,7 +80,7 @@ async function downloadInvoice (opts) {
     if (processIdArr.length === 0) {
       return
     }
-    filename = `${draftPath}\\发票清单${moment().format('YYYY-MM-DD_HH-mm-ss')}.zip`
+    filename = `${draftPath}/发票清单${moment().format('YYYY-MM-DD_HH-mm-ss')}.zip`
     log.info(`文件开始下载：http://cdwp.cnbmxinyun.com/mkinvoicenew/packagedownload?id=${encodeURIComponent(processIdArr.join(','))}`)
     await downloadFile(`http://cdwp.cnbmxinyun.com/mkinvoicenew/packagedownload?id=${encodeURIComponent(processIdArr.join(','))}`, filename)
     log.info(`文件下载成功：${filename}`)
