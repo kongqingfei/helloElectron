@@ -259,20 +259,24 @@ function bindEvent() {
     qs('.invoiceSubmit .jsNumSuccess').innerHTML = `共0个`
     qs('.invoiceSubmit .jsInvoiceError').value = ''
     qs('.invoiceSubmit .jsNumError').innerHTML = `共0个`
+    qs('.invoiceSubmit .jsInvoiceNotFound').value = ''
+    qs('.invoiceSubmit .jsNumNotFound').innerHTML = `共0个`
     qs('.invoiceSubmit .jsStatus').innerHTML = '（运行中...）'
     qs('.invoiceSubmit .remark').innerHTML = `运行结果：`
     qs('.invoiceSubmit .remark').className = 'remark'
     currentTa = qs('#logInvoiceSubmit')
     getLog(true)
-    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitInvoice', {invoiceArr, realAmount0: qs('.jsRealAmount0').checked});
+    const {successArr, errorArr, notFoundArr} = await ipcRenderer.invoke('puppeteer.submitInvoice', {invoiceArr, realAmount0: qs('.jsRealAmount0').checked});
     qs('.invoiceSubmit .jsNumAll').innerHTML = `共${invoiceArr.length}个`
     qs('.invoiceSubmit .jsInvoiceSuccess').value = successArr.join('\n')
     qs('.invoiceSubmit .jsNumSuccess').innerHTML = `共${successArr.length}个`
     qs('.invoiceSubmit .jsInvoiceError').value = errorArr.join('\n')
     qs('.invoiceSubmit .jsNumError').innerHTML = `共${errorArr.length}个`
+    qs('.invoiceSubmit .jsInvoiceNotFound').value = notFoundArr.join('\n')
+    qs('.invoiceSubmit .jsNumNotFound').innerHTML = `共${notFoundArr.length}个`
     stopLog()
     qs('.invoiceSubmit .jsStatus').innerHTML = '（当前未运行）'
-    if (errorArr.length === 0) {
+    if (errorArr.length === 0 && notFoundArr.length === 0) {
       qs('.invoiceSubmit .remark').innerHTML = `运行结果：全部提交成功`
       qs('.invoiceSubmit .remark').className = 'remark success'
     } else {

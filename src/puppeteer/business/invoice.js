@@ -56,36 +56,42 @@ async function submitInvoice(opts) {
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
 
     await pageOne.waitForSelector('.subApply')
-    await pageOne.waitFor(2000);
+    let counter = 10 // 最多循环10次
+
+    await pageOne.waitFor(1000);
     await pageOne.click('.subApply')
-    await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
-    await pageOne.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
-    const successDisplay = await pageOne.$eval('.sweet-alert > .sa-success', el => el.style.display);
-    const dialogTxt = await pageOne.$eval('.sweet-alert > h2', el => el.innerHTML);
-    if (successDisplay === 'block') {
-      log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
-      successArr.push(invoiceNo)
-    } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
-      await pageOne.waitFor(1000);
-      await pageOne.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
-      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
-      await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+    async function dealResult() {
+      if (counter <= 0) {
+        return
+      }
+      counter--
       await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
       await pageOne.waitForFunction(selector => document.querySelector(selector).innerHTML !== 'Title', {}, '.sweet-alert > h2');
-      const successDisplayIn = await pageOne.$eval('.sweet-alert > .sa-success', el => el.style.display);
-      const dialogTxtIn = await pageOne.$eval('.sweet-alert > h2', el => el.innerHTML);
-      if (successDisplayIn === 'block') {
-        // 关闭页面
-        log.info(`----${invoiceNo}合同处理成功----${dialogTxtIn}----`)
+      const successDisplay = await pageOne.$eval('.sweet-alert > .sa-success', el => el.style.display);
+      const dialogTxt = await pageOne.$eval('.sweet-alert > h2', el => el.innerHTML);
+      if (successDisplay === 'block') {
+        log.info(`----${invoiceNo}合同处理成功----${dialogTxt}----`)
         successArr.push(invoiceNo)
+      } else if (dialogTxt.includes('请推送') || dialogTxt.includes('请删除')) {
+        await pageOne.waitFor(1000);
+        await pageOne.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+        await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+        await pageOne.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+        await dealResult()
       } else {
-        log.error(`----${invoiceNo}合同处理失败----${dialogTxtIn}----`)
-        errorArr.push(invoiceNo)
+        if (['系统处理中', '请1秒后再点击'].includes(dialogTxt)) {
+          log.info(`----${invoiceNo}合同处理失败----${dialogTxt}----1秒后重试----`)
+          await pageOne.click('.sweet-alert > .sa-button-container > .sa-confirm-button-container > .confirm')
+          await pageOne.waitFor(1000)
+          await pageOne.click('.subApply')
+          await dealResult()
+        } else {
+          log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
+          errorArr.push(invoiceNo)
+        }
       }
-    }else {
-      log.error(`----${invoiceNo}合同处理失败----${dialogTxt}----`)
-      errorArr.push(invoiceNo)
     }
+    await dealResult()
     // 关闭页面
     await pageOne.close()
   }
@@ -104,7 +110,7 @@ async function submitInvoice(opts) {
       const no = invoiceNos[ind]
       const tempNo = no.split('-')[0]
       if (invoiceArr.includes(tempNo) && !successArr.includes(tempNo) && !onlyDel) { // 只取最新的
-        const href = await pageDraft.$eval('table.orangestyle.table > tbody > tr.ng-scope > td:nth-child(3) > a', (el) => {
+        const href = await pageDraft.$eval(`table.orangestyle.table > tbody > tr.ng-scope:nth-child(${ind + 1}) > td:nth-child(3) > a`, (el) => {
           return el.href;
         })
         await pageDraft.waitFor(1000)
@@ -135,23 +141,45 @@ async function submitInvoice(opts) {
   async function getFromSearch(invoiceArr) {
     for (let i = 0; i < invoiceArr.length; i++) {
       const invoiceNo = invoiceArr[i].split('-')[0]
-      await pageDraft.reload()
-      await pageDraft.waitForSelector(`table.orangestyle.table > tbody > tr.ng-scope`)
-      await pageDraft.type('.genSearch table tr td:nth-child(1) input[name=contractno]', invoiceNo)
-      await pageDraft.click('.genSearch > .searchbtn2[ng-click="search()"]:nth-child(3)')
-      await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
-      await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
-      await getFromFirstPage([invoiceNo])
+      try {
+        await pageDraft.reload()
+        await pageDraft.waitForSelector(`table.orangestyle.table > tbody > tr.ng-scope`)
+        await pageDraft.type('.genSearch table tr td:nth-child(1) input[name=contractno]', invoiceNo)
+        await pageDraft.click('.genSearch > .searchbtn2[ng-click="search()"]:nth-child(3)')
+        await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');
+        await pageDraft.waitForFunction(selector => document.querySelector(selector).style.display !== 'block', {}, '#loading');
+        await getFromFirstPage([invoiceNo])
+      } catch(e) {
+        log.error(e.stack);
+        log.error(`----${invoiceNo}合同处理失败----未知异常----`)
+        errorArr.push(invoiceNo)
+      }
       // 根据合同id，重新查询当前列表，删除多余合同
-      await getFromFirstPage([invoiceNo], true)
+      try {
+        await getFromFirstPage([invoiceNo], true)
+      } catch(e) {
+        log.error(e.stack);
+        log.error(`----${invoiceNo}多余合同删除失败----未知异常----`)
+      }
     }
   }
   const successArr = []
-  const errorArr = []
+  let errorArr = []
   let notFoundArr = []
   let filename = ""
   log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
   await getFromSearch(invoiceArr)
+
+  // 失败重试一次
+  log.info(`异常合同重试：${JSON.stringify(errorArr)}`)
+  let prevArr, prevLen
+  do {
+    prevArr = errorArr
+    prevLen = prevArr.length
+    errorArr = []
+    await getFromSearch(prevArr)
+  } while(errorArr.length < prevLen)
+
   log.info(`----提交审批自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}`)
   log.info(`成功合同：${JSON.stringify(successArr)}`)

@@ -51,8 +51,10 @@ async function submitContract(opts) {
           await pageOne.select('select[ng-model="ORDER_DATA.contractbase.receivabletype"]', '修改模式'); // 单选择器
         }
         await pageOne.click('[ng-model="ORDER_DATA.contractbase.effectdate"]')
-        await pageOne.waitForSelector(`[lang="zh-cn"]`)
-        await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
+        // await pageOne.waitForSelector(`[lang="zh-cn"]`)
+        // await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '[lang="zh-cn"]');
+        // 上面两行仅在headless为false时生效，为true时不生效，很奇怪，先改成等待1秒
+        pageOne.waitFor(1000)
         const elementHandle = await pageOne.$('iframe');
         const frame = await elementHandle.contentFrame();
         await frame.waitForSelector('#dpTodayInput');
@@ -98,10 +100,16 @@ async function submitContract(opts) {
       const no = invoiceNos[ind]
       const tempNo = no.split('-')[0]
       if (invoiceArr.includes(tempNo) && !successArr.includes(tempNo)) { // 只取最新的
-        const href = await pageContract.$eval('.ui-grid-canvas > .ui-grid-row:nth-child(' + (ind + 1) + ') .ui-grid-coluiGrid-0005 > .ui-grid-cell-contents > a', (el) => {
-          return el.href
-        })
-        await submitOne(href, tempNo)
+        try {
+          const href = await pageContract.$eval('.ui-grid-canvas > .ui-grid-row:nth-child(' + (ind + 1) + ') .ui-grid-coluiGrid-0005 > .ui-grid-cell-contents > a', (el) => {
+            return el.href
+          })
+          await submitOne(href, tempNo)
+        } catch(e) {
+          log.error(e.stack);
+          log.error(`----${tempNo}合同处理失败----合同未找到或未知异常----`)
+          errorArr.push(tempNo)
+        }
         await pageContract.bringToFront()
       }
     }
