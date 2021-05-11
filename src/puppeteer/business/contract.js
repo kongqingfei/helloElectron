@@ -140,7 +140,6 @@ async function submitContract(opts) {
   const successArr = []
   const errorArr = []
   let notFoundArr = []
-  const processIdArr = []
   log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
   await getFromFirstPage(invoiceArr)
   if (successArr.length < invoiceArr.length) { // 首页未找齐，需要查询补充
@@ -169,12 +168,16 @@ async function uploadContract(opts) {
   const {browser, page, invoiceArr, contractPath} = opts
   const start = Date.now();
   log.info(`----上传销售合同自动化任务开始----`)
+  let uploadPdf = null
   await page.goto('http://cdwp.cnbmxinyun.com/#/hold/docManageUpload')
   await page.waitForSelector('button[value="批量上传文件"]')
   await page.waitForSelector('input[value="批量上传文件"]')
-  // await page.click('button[value="批量上传文件"]')
-  const uploadPdf = await page.waitForSelector('input[value="批量上传文件"]')
-
+  uploadPdf = await page.waitForSelector('input[value="批量上传文件"]')
+  // 加载页面
+  async function reload() {
+    await page.reload()
+    uploadPdf = await page.waitForSelector('input[value="批量上传文件"]')
+  }
   // 上传桌面的pdf文件
   async function selectPdf(invoiceArr) {
     for(let ind = 0; ind < invoiceArr.length; ind++) {
@@ -228,15 +231,23 @@ async function uploadContract(opts) {
   let successArr = []
   const errorArr = []
   let notFoundArr = []
-  const processIdArr = []
   log.info(`全部待处理合同：${JSON.stringify(invoiceArr)}`)
-  await selectPdf(invoiceArr)
   try {
+    await selectPdf(invoiceArr)
     await doUploadPdf()
   } catch (e) {
     log.error(e.stack);
-    log.error(`----未知异常----`)
+    log.error(`----未知异常----失败重试----`)
     successArr = []
+    try {
+      await reload()
+      await selectPdf(invoiceArr)
+      await doUploadPdf()
+    } catch (e) {
+      log.error(e.stack);
+      log.error(`----未知异常----`)
+      successArr = []
+    }
   }
   log.info(`----上传销售合同自动化任务结束----总耗时${Date.now() - start}----`)
   log.info(`全部合同：${JSON.stringify(invoiceArr)}`)

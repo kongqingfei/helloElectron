@@ -1,5 +1,6 @@
 const { screenWidth, screenHeight } = require('../config')
 const log = require('../../utils/logUtil')
+const os = require('os')
 
 async function submitInvoice(opts) {
   const { browser, page, invoiceArr, realAmount0=false } = opts
@@ -43,10 +44,19 @@ async function submitInvoice(opts) {
     if (realAmount0) { // 将申请实际开票金额改为0
       await pageOne.waitForSelector('[name="real_amount"]')
       await pageOne.focus('[name="real_amount"]')
-      await pageOne.keyboard.down('Control')
-      await pageOne.keyboard.press('a')
-      await pageOne.keyboard.up('Control')
-      await pageOne.keyboard.press('Backspace')
+      if (os.type() === 'Darwin') { // mac系统
+        for (let i = 0; i < 30; i++) {
+          await pageOne.keyboard.down('ArrowRight')
+        }
+        for (let i = 0; i < 30; i++) {
+          await pageOne.keyboard.down('Backspace')
+        }
+      } else {
+        await pageOne.keyboard.down('Control')
+        await pageOne.keyboard.press('a')
+        await pageOne.keyboard.up('Control')
+        await pageOne.keyboard.press('Backspace')
+      }
       await pageOne.type('[name="real_amount"]', "0")
     }
     // 点一下刷新
