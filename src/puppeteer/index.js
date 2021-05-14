@@ -52,7 +52,7 @@ async function makeInvoice(opts) {
           await pageInvoice.click('.addTable > table > tbody:nth-child(1) input[type=checkbox]')
           await pageInvoice.click('form[name=invoiceForm] .gerSub .subSave')
           await pageInvoice.waitForSelector('select[ng-model="sdef.isfpandxsht"]')
-          await pageInvoice.select('select[ng-model="sdef.isfpandxsht"]', '是'); // 单选择器
+          await pageInvoice.select('select[ng-model="sdef.isfpandxsht"]', '否'); // 单选择器
           await pageInvoice.click('form[name=mkinvoiceForm] > .gerSub .subSave')
           async function dealResult() { // 处理最后的结果，弹窗可能会弹多个
             await pageInvoice.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '.sweet-alert');
