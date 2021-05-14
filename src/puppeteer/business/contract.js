@@ -3,7 +3,7 @@ const fs = require('fs');
 const log = require('../../utils/logUtil')
 
 async function submitContract(opts) {
-  const {browser, page, invoiceArr, nextPerson='王丽娟'} = opts
+  const {browser, page, invoiceArr, toWho='3'} = opts
   const start = Date.now();
   log.info(`----提交销售合同自动化任务开始----`)
   await page.goto('http://cdwp.cnbmxinyun.com/#/app/approval')
@@ -64,8 +64,8 @@ async function submitContract(opts) {
     await pageOne.waitForSelector('.danger[ng-if="agreeBtn"]')
     await pageOne.click('.danger[ng-if="agreeBtn"]')
     await pageOne.waitForSelector('select[ng-model="nextApply"]')
-    await pageOne.waitForSelector('select[ng-model="nextApply"] option[value="3"]')
-    await pageOne.select('select[ng-model="nextApply"]', "3"); // 单选择器
+    await pageOne.waitForSelector(`select[ng-model="nextApply"] option[value="${toWho}"]`)
+    await pageOne.select('select[ng-model="nextApply"]', toWho); // 单选择器
     await pageOne.click('button[ng-click="applyFn(nextApply,CNBM_MULTI.corp)"]')
     // todo 成功的判断
     await pageOne.waitForFunction(selector => document.querySelector(selector).style.display === 'block', {}, '#loading');

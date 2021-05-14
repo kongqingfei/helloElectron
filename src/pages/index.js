@@ -52,6 +52,11 @@ function bindEvent() {
       }
     })
   })
+  qs('.jsToWho').addEventListener('change', () => {
+    config.contract = config.contract || {}
+    config.contract.toWho = qs('.jsToWho').value
+    ipcRenderer.send('setConfigValue', {contract: config.contract})
+  })
   // 登录
   qs('.jsLogin').addEventListener('click', async () => {
     if (!config.chromePath) {
@@ -224,7 +229,7 @@ function bindEvent() {
     qs('.contractSubmit .remark').className = 'remark'
     currentTa = qs('#logContractSubmit')
     getLog(true)
-    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitContract', {invoiceArr});
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.submitContract', {invoiceArr, toWho: config.contract.toWho});
     qs('.contractSubmit .jsNumAll').innerHTML = `共${invoiceArr.length}个`
     qs('.contractSubmit .jsInvoiceSuccess').value = successArr.join('\n')
     qs('.contractSubmit .jsNumSuccess').innerHTML = `共${successArr.length}个`
@@ -319,6 +324,7 @@ function init() {
   if (chromePath) {
     qs('.login .jsPath').innerHTML = chromePath
   }
+  qs('.jsToWho').value = contract.toWho || '3'
   bindEvent()
   // alert(ipcRenderer.sendSync('os.homedir', {a: 1, b: 2}))
 }
