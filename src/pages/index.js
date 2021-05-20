@@ -97,7 +97,7 @@ function bindEvent() {
     qs('.invoice .jsInvoiceOrder').value = ''
     qs('.invoice .jsNumOrder').innerHTML = `共0个`
     qs('.invoice .jsStatus').innerHTML = '（运行中...）'
-    qs('.invoice .remark').innerHTML = `运行结果：`
+    qs('.invoice .remark').innerHTML = `&nbsp;`
     qs('.invoice .remark').className = 'remark'
     currentTa = qs('#logInvoice')
     getLog(true)
@@ -112,10 +112,10 @@ function bindEvent() {
     stopLog()
     qs('.invoice .jsStatus').innerHTML = '（当前未运行）'
     if (errorArr.length === 0) {
-      qs('.invoice .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.invoice .remark').innerHTML = `全部提交成功`
       qs('.invoice .remark').className = 'remark success'
     } else {
-      qs('.invoice .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.invoice .remark').innerHTML = `部分合同号提交失败`
       qs('.invoice .remark').className = 'remark error'
     }
   })
@@ -142,7 +142,7 @@ function bindEvent() {
     qs('.download .jsInvoiceError').value = ''
     qs('.download .jsNumError').innerHTML = `共0个`
     qs('.download .jsStatus').innerHTML = '（运行中...）'
-    qs('.download .remark').innerHTML = `运行结果：`
+    qs('.download .remark').innerHTML = `&nbsp;`
     qs('.download .remark').className = 'remark'
     currentTa = qs('#logDownload')
     getLog(true)
@@ -155,10 +155,10 @@ function bindEvent() {
     stopLog()
     qs('.download .jsStatus').innerHTML = '（当前未运行）'
     if (successArr.length > 0) {
-      qs('.download .remark').innerHTML = `运行结果：${filename}`
+      qs('.download .remark').innerHTML = `${filename}`
       qs('.download .remark').className = 'remark success'
     } else {
-      qs('.download .remark').innerHTML = `运行结果：未找到可下载草稿`
+      qs('.download .remark').innerHTML = `未找到可下载草稿`
       qs('.download .remark').className = 'remark error'
     }
   })
@@ -185,7 +185,7 @@ function bindEvent() {
     qs('.contractUpload .jsInvoiceError').value = ''
     qs('.contractUpload .jsNumError').innerHTML = `共0个`
     qs('.contractUpload .jsStatus').innerHTML = '（运行中...）'
-    qs('.contractUpload .remark').innerHTML = `运行结果：`
+    qs('.contractUpload .remark').innerHTML = `&nbsp;`
     qs('.contractUpload .remark').className = 'remark'
     currentTa = qs('#logContractUpload')
     getLog(true)
@@ -198,10 +198,10 @@ function bindEvent() {
     stopLog()
     qs('.contractUpload .jsStatus').innerHTML = '（当前未运行）'
     if (errorArr.length === 0 && successArr.length > 0) {
-      qs('.contractUpload .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.contractUpload .remark').innerHTML = `全部提交成功`
       qs('.contractUpload .remark').className = 'remark success'
     } else {
-      qs('.contractUpload .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.contractUpload .remark').innerHTML = `部分合同号提交失败`
       qs('.contractUpload .remark').className = 'remark error'
     }
   })
@@ -225,7 +225,7 @@ function bindEvent() {
     qs('.contractSubmit .jsInvoiceError').value = ''
     qs('.contractSubmit .jsNumError').innerHTML = `共0个`
     qs('.contractSubmit .jsStatus').innerHTML = '（运行中...）'
-    qs('.contractSubmit .remark').innerHTML = `运行结果：`
+    qs('.contractSubmit .remark').innerHTML = `&nbsp;`
     qs('.contractSubmit .remark').className = 'remark'
     currentTa = qs('#logContractSubmit')
     getLog(true)
@@ -238,10 +238,10 @@ function bindEvent() {
     stopLog()
     qs('.contractSubmit .jsStatus').innerHTML = '（当前未运行）'
     if (errorArr.length === 0) {
-      qs('.contractSubmit .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.contractSubmit .remark').innerHTML = `全部提交成功`
       qs('.contractSubmit .remark').className = 'remark success'
     } else {
-      qs('.contractSubmit .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.contractSubmit .remark').innerHTML = `部分合同号提交失败`
       qs('.contractSubmit .remark').className = 'remark error'
     }
   })
@@ -267,7 +267,7 @@ function bindEvent() {
     qs('.invoiceSubmit .jsInvoiceNotFound').value = ''
     qs('.invoiceSubmit .jsNumNotFound').innerHTML = `共0个`
     qs('.invoiceSubmit .jsStatus').innerHTML = '（运行中...）'
-    qs('.invoiceSubmit .remark').innerHTML = `运行结果：`
+    qs('.invoiceSubmit .remark').innerHTML = `&nbsp;`
     qs('.invoiceSubmit .remark').className = 'remark'
     currentTa = qs('#logInvoiceSubmit')
     getLog(true)
@@ -282,10 +282,10 @@ function bindEvent() {
     stopLog()
     qs('.invoiceSubmit .jsStatus').innerHTML = '（当前未运行）'
     if (errorArr.length === 0 && notFoundArr.length === 0) {
-      qs('.invoiceSubmit .remark').innerHTML = `运行结果：全部提交成功`
+      qs('.invoiceSubmit .remark').innerHTML = `全部提交成功`
       qs('.invoiceSubmit .remark').className = 'remark success'
     } else {
-      qs('.invoiceSubmit .remark').innerHTML = `运行结果：部分合同号提交失败`
+      qs('.invoiceSubmit .remark').innerHTML = `部分合同号提交失败`
       qs('.invoiceSubmit .remark').className = 'remark error'
     }
   })

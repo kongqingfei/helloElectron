@@ -1,23 +1,47 @@
 .module .ta{
-  height:140px;
+  height:100px;
 }
 .module .logWrap {
-  width:100%;
+  width:20%;
 }
 .module .log {
   width:100%;
   background:#000;
   color:#fff;
-  font-size:12px;
-  padding:5px;
+  font-size:10px;
+  padding:2px;
   height:100px;
-  margin-top:5px;
+  /* margin-top:5px; */
   box-sizing: border-box;
 }
 .module .pathWrap {
-  margin-top: 5px;
+  /* margin-top: 5px; */
   display: flex;
+  margin-left: 20px;
+  align-items: center;
 }
 .module .pathWrap .btn {
   margin-left: 5px;
+}
+.moduleBlue {
+  color:#103eb9;
+  border:solid 1px #103eb9;
+}
+.moduleBlue .btn{
+  color:#103eb9;
+  border:solid 1px #103eb9;
+  border-radius:2px;
+}
+.moduleBlue .ta {
+  border-color:#103eb9;
+  color:#103eb9;
+}
+.moduleBlue select, .moduleBlue select option {
+  color:#103eb9;
+  border-color:#103eb9;
+  font-size:12px;
+}
+.moduleBlue .log {
+  background-color: #103eb9;
+  border-color:#103eb9;
 }

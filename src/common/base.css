@@ -2,12 +2,12 @@ textarea {
   resize: none;
 }
 body {
-  font-size:14px;
+  font-size:12px;
 }
 .module {
   border:solid 1px gray;
-  margin-bottom:10px;
-  padding:5px;
+  margin-bottom:2px;
+  padding:2px;
 }
 .module .title {
   display:flex;
@@ -15,10 +15,10 @@ body {
 }
 .module .title .txt {
   font-weight: bold;
-  font-size:16px;
+  font-size:14px;
 }
 .module .content {
-  margin-top:5px;
+  margin-top:2px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -26,19 +26,24 @@ body {
 .module .content .formItem {
   display:flex;
   align-items: center;
-  width:50%;
+  width:25%;
 }
 .module .content .formItem.column {
   flex-direction: column;
   align-items: flex-start;
-  width:25%;
+  width:20%;
 }
 .module .remark {
-  margin-top:5px;
+  /* margin-top:2px; */
 }
 .module .success {
   color:#52c41a;
 }
 .module .error {
   color:#ff4d4f;
+}
+.module .btn {
+  font-size:12px;
+  padding-top:0;
+  padding-bottom:0;
 }

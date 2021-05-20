@@ -15,11 +15,11 @@
       <div class="operators">
         <button class="btn jsLogin">点击登录</button>
       </div>
-    </div>
-    <div class="pathWrap">
-      <div class="label">谷歌浏览器路径：</div>
-      <div class="path jsPath"></div>
-      <button class="btn jsPathSelect">点击选择</button>
+      <div class="pathWrap">
+        <div class="label">谷歌浏览器路径：</div>
+        <div class="path jsPath"></div>
+        <button class="btn jsPathSelect">点击选择</button>
+      </div>
     </div>
     <div class="content">
       <div class="formItem">
@@ -28,12 +28,12 @@
       <div class="formItem">
         <div class="label">密码：</div> <input id="password" class="name" type="password" value="" disabled />
       </div>
+      <div class="remark success" style="font-weight: bold;">专属软件，不支持他人使用</div>
     </div>
-    <div class="remark success">专属软件，不支持他人使用</div>
   </div>
   <div class="invoice module">
     <div class="title">
-      <div class="txt">做发票草稿</div>
+      <div class="txt">发票—做草稿</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoInvoice">点击开始</button>
@@ -53,23 +53,22 @@
         <div class="label">要先干掉配套的：</div> <textarea class="ta jsInvoiceOrder"></textarea> <div class="tip jsNumOrder">共0个</div>
       </div>
       <div class="logWrap">
-        <textarea class="log" id="logInvoice"></textarea>
+        <div class="label">运行结果：</div> <textarea class="log" id="logInvoice"></textarea> <div class="tip remark">&nbsp;</div>
       </div>
     </div>
-    <div class="remark">运行结果：</div>
   </div>
   <div class="download module">
     <div class="title">
-      <div class="txt">下载发票草稿</div>
+      <div class="txt">发票—下载草稿</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoDownload">点击开始</button>
       </div>
-    </div>
-    <div class="pathWrap">
-      <div class="label">下载路径：</div>
-      <div class="path jsPath"></div>
-      <button class="btn jsPathSelect">点击选择</button>
+      <div class="pathWrap">
+        <div class="label">下载路径：</div>
+        <div class="path jsPath"></div>
+        <button class="btn jsPathSelect">点击选择</button>
+      </div>
     </div>
     <div class="content">
       <div class="formItem column">
@@ -81,15 +80,15 @@
       <div class="formItem column">
         <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
       </div>
+      <div class="formItem column"></div>
       <div class="logWrap">
-        <textarea class="log" id="logDownload"></textarea>
+        <div class="label">运行结果：</div> <textarea class="log" id="logDownload"></textarea> <div class="tip remark">&nbsp;</div>
       </div>
     </div>
-    <div class="remark">运行结果：</div>
   </div>
   <div class="invoiceSubmit module">
     <div class="title">
-      <div class="txt">发票提交审批</div>
+      <div class="txt">发票—提交审批</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoInvoiceSubmit">点击开始</button>
@@ -110,23 +109,22 @@
         <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceNotFound"></textarea> <div class="tip jsNumNotFound">共0个</div>
       </div>
       <div class="logWrap">
-        <textarea class="log" id="logInvoiceSubmit"></textarea>
+        <div class="label">运行结果：</div> <textarea class="log" id="logInvoiceSubmit"></textarea> <div class="tip remark">&nbsp;</div>
       </div>
     </div>
-    <div class="remark">运行结果：</div>
   </div>
-  <div class="contractUpload module">
+  <div class="contractUpload module moduleBlue">
     <div class="title">
-      <div class="txt">上传销售合同</div>
+      <div class="txt">合同—上传PDF</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoContractUpload">点击开始</button>
       </div>
-    </div>
-    <div class="pathWrap">
-      <div class="label">文件路径：</div>
-      <div class="path jsPath"></div>
-      <button class="btn jsPathSelect">点击选择</button>
+      <div class="pathWrap">
+        <div class="label">文件路径：</div>
+        <div class="path jsPath"></div>
+        <button class="btn jsPathSelect">点击选择</button>
+      </div>
     </div>
     <div class="content">
       <div class="formItem column">
@@ -138,32 +136,32 @@
       <div class="formItem column">
         <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
       </div>
+      <div class="formItem column"></div>
       <div class="logWrap">
-        <textarea class="log" id="logContractUpload"></textarea>
+        <div class="label">运行结果：</div> <textarea class="log" id="logContractUpload"></textarea> <div class="tip remark">&nbsp;</div>
       </div>
     </div>
-    <div class="remark">运行结果：</div>
   </div>
-  <div class="contractSubmit module">
+  <div class="contractSubmit module moduleBlue">
     <div class="title">
-      <div class="txt">提交销售合同</div>
+      <div class="txt">合同—提交审批</div>
       <div class="status jsStatus">（当前未运行）</div>
       <div class="operators">
         <button class="btn jsDoContractSubmit">点击开始</button>
       </div>
-    </div>
-    <div class="pathWrap">
-      <div class="label">提交给谁：</div>
-      <div class="path">
-        <select class="toWho jsToWho">
-          <option class="opt" value="0">李桂芹</option>
-          <option class="opt" value="1">杨旭艳</option>
-          <option class="opt" value="2">王丽鹃</option>
-          <option class="opt" value="3">丁涵语</option>
-          <option class="opt" value="4">王辉</option>
-          <option class="opt" value="5">张娜</option>
-          <option class="opt" value="6">付菁</option>
-        </select>
+      <div class="pathWrap">
+        <div class="label">提交给谁：</div>
+        <div class="path">
+          <select class="toWho jsToWho">
+            <option class="opt" value="0">李桂芹</option>
+            <option class="opt" value="1">杨旭艳</option>
+            <option class="opt" value="2">王丽鹃</option>
+            <option class="opt" value="3">丁涵语</option>
+            <option class="opt" value="4">王辉</option>
+            <option class="opt" value="5">张娜</option>
+            <option class="opt" value="6">付菁</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="content">
@@ -176,11 +174,11 @@
       <div class="formItem column">
         <div class="label">未找到合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
       </div>
+      <div class="formItem column"></div>
       <div class="logWrap">
-        <textarea class="log" id="logContractSubmit"></textarea>
+        <div class="label">运行结果：</div> <textarea class="log" id="logContractSubmit"></textarea> <div class="tip remark">&nbsp;</div>
       </div>
     </div>
-    <div class="remark">运行结果：</div>
   </div>
   <script src="index.js"></script>
 </body>
