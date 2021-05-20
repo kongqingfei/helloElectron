@@ -2,7 +2,7 @@ textarea {
   resize: none;
 }
 body {
-  font-size:12px;
+  font-size:13px;
 }
 .module {
   border:solid 1px gray;
@@ -43,7 +43,7 @@ body {
   color:#ff4d4f;
 }
 .module .btn {
-  font-size:12px;
+  font-size:13px;
   padding-top:0;
   padding-bottom:0;
 }

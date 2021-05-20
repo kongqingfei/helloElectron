@@ -8,7 +8,7 @@
   width:100%;
   background:#000;
   color:#fff;
-  font-size:10px;
+  font-size:12px;
   padding:2px;
   height:100px;
   /* margin-top:5px; */
@@ -39,7 +39,7 @@
 .moduleBlue select, .moduleBlue select option {
   color:#103eb9;
   border-color:#103eb9;
-  font-size:12px;
+  font-size:13px;
 }
 .moduleBlue .log {
   background-color: #103eb9;
