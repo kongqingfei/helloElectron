@@ -33,6 +33,9 @@ ipcMain.handle('puppeteer.submitContract', async (event, param) => {
 ipcMain.handle('puppeteer.uploadContract', async (event, param) => {
   return await puppeteerUtil.uploadContract(param)
 })
+ipcMain.handle('puppeteer.noToYesContract', async (event, param) => {
+  return await puppeteerUtil.noToYesContract(param)
+})
 ipcMain.handle('puppeteer.submitInvoice', async (event, param) => {
   return await puppeteerUtil.submitInvoice(param)
 })

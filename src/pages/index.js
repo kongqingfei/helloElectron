@@ -245,6 +245,46 @@ function bindEvent() {
       qs('.contractSubmit .remark').className = 'remark error'
     }
   })
+  // 合同-否变是
+  qs('.jsDoContractNoToYes').addEventListener('click', async () => {
+    if (!isLogin) {
+      return await toast('请先登录')
+    }
+    const invoiceArr = (qs('.contractNoToYes .jsInvoiceAll').value || '').split('\n').reduce((prev, cur) => {
+      const temp = cur.trim()
+      if (temp) {
+        prev.push(temp)
+      }
+      return prev
+    }, [])
+    if (invoiceArr.length === 0) {
+      return await toast('请先录入待处理合同号')
+    }
+    qs('.contractNoToYes .jsInvoiceSuccess').value = ''
+    qs('.contractNoToYes .jsNumSuccess').innerHTML = `共0个`
+    qs('.contractNoToYes .jsInvoiceError').value = ''
+    qs('.contractNoToYes .jsNumError').innerHTML = `共0个`
+    qs('.contractNoToYes .jsStatus').innerHTML = '（运行中...）'
+    qs('.contractNoToYes .remark').innerHTML = `&nbsp;`
+    qs('.contractNoToYes .remark').className = 'remark'
+    currentTa = qs('#logContractNoToYes')
+    getLog(true)
+    const {successArr, errorArr} = await ipcRenderer.invoke('puppeteer.noToYesContract', {invoiceArr});
+    qs('.contractNoToYes .jsNumAll').innerHTML = `共${invoiceArr.length}个`
+    qs('.contractNoToYes .jsInvoiceSuccess').value = successArr.join('\n')
+    qs('.contractNoToYes .jsNumSuccess').innerHTML = `共${successArr.length}个`
+    qs('.contractNoToYes .jsInvoiceError').value = errorArr.join('\n')
+    qs('.contractNoToYes .jsNumError').innerHTML = `共${errorArr.length}个`
+    stopLog()
+    qs('.contractNoToYes .jsStatus').innerHTML = '（当前未运行）'
+    if (errorArr.length === 0) {
+      qs('.contractNoToYes .remark').innerHTML = `全部提交成功`
+      qs('.contractNoToYes .remark').className = 'remark success'
+    } else {
+      qs('.contractNoToYes .remark').innerHTML = `部分合同号提交失败`
+      qs('.contractNoToYes .remark').className = 'remark error'
+    }
+  })
   // 发票提交
   qs('.jsDoInvoiceSubmit').addEventListener('click', async () => {
     if (!isLogin) {

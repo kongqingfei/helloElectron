@@ -1,7 +1,7 @@
 const {createPage, login} = require('../puppeteer/common/common')
 const {makeInvoice} = require('../puppeteer/index')
 const {downloadInvoice} = require('../puppeteer/business/download')
-const {submitContract, uploadContract} = require('../puppeteer/business/contract')
+const {submitContract, uploadContract, noToYesContract} = require('../puppeteer/business/contract')
 const {submitInvoice} = require('../puppeteer/business/invoice')
 const {submitCost} = require('../puppeteer/business/cost')
 
@@ -51,6 +51,13 @@ const ext = {
   },
   uploadContract: async (opts) => {
     return await uploadContract({
+      browser: ext.browser,
+      page: ext.page,
+      ...opts,
+    })
+  },
+  noToYesContract: async (opts) => {
+    return await noToYesContract({
       browser: ext.browser,
       page: ext.page,
       ...opts,
