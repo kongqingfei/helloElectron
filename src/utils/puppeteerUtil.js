@@ -4,6 +4,7 @@ const {downloadInvoice} = require('../puppeteer/business/download')
 const {submitContract, uploadContract, noToYesContract} = require('../puppeteer/business/contract')
 const {submitInvoice} = require('../puppeteer/business/invoice')
 const {submitCost} = require('../puppeteer/business/cost')
+const {createYS, executeYS} = require('../puppeteer/business/finance')
 
 const ext = {
   browser: null,
@@ -76,6 +77,16 @@ const ext = {
       page: ext.page,
       ...opts,
     })
+  },
+  createYS: async (opts) => {
+    return await createYS({
+      browser: ext.browser,
+      page: ext.page,
+      ...opts,
+    })
+  },
+  executeYS: async (opts) => {
+    return await executeYS(opts)
   }
 }
 

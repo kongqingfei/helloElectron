@@ -204,6 +204,42 @@
       </div>
     </div>
   </div>
+  <div class="financeYS module">
+    <div class="title">
+      <div class="txt">财务—创建应收</div>
+      <div class="status jsStatus">（当前未运行）</div>
+      <div class="operators">
+        <button class="btn jsDoFinanceYS">点击开始</button>
+      </div>
+      <div class="pathWrap excel">
+        <div class="label">Excel路径：</div>
+        <div class="path jsPath"></div>
+        <button class="btn jsPathSelect">点击选择</button>
+      </div>
+    </div>
+    <div class="second">
+      <div class="pathWrap script">
+        <div class="label">脚本路径：</div>
+        <div class="path jsPath"></div>
+        <button class="btn jsPathSelect">点击选择</button>
+        <button class="btn jsDoScriptFinanceYS">执行脚本</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="formItem column">
+        <div class="label">待处理合同号：</div> <textarea class="ta jsInvoiceAll"></textarea> <div class="tip jsNumAll">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已成功合同号：</div> <textarea class="ta jsInvoiceSuccess"></textarea> <div class="tip jsNumSuccess">共0个</div>
+      </div>
+      <div class="formItem column">
+        <div class="label">已失败合同号：</div> <textarea class="ta jsInvoiceError"></textarea> <div class="tip jsNumError">共0个</div>
+      </div>
+      <div class="logWrap" style="flex:2;">
+        <div class="label">运行结果：</div> <textarea class="log" id="logFinanceYS"></textarea> <div class="tip remark">&nbsp;</div>
+      </div>
+    </div>
+  </div>
   <script src="index.js"></script>
 </body>
 </html>

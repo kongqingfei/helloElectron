@@ -29,6 +29,17 @@ const ext = {
       var stream = fs.createWriteStream(filename);
       request(uri).pipe(stream).on('close', res); 
     })
+  },
+  waitForInnerHTML: async function (page, selector, innerHTML) {
+    try {
+      if (await page.$eval(selector, el => el.innerHTML) !== innerHTML) {
+        await page.waitFor(500)
+        await ext.waitForInnerHTML(page, selector, innerHTML)
+      }
+    } catch(e) {
+      await page.waitFor(500)
+      await ext.waitForInnerHTML(page, selector, innerHTML)
+    }
   }
 }
 

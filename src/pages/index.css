@@ -23,6 +23,12 @@
 .module .pathWrap .btn {
   margin-left: 5px;
 }
+.module .second .pathWrap {
+  margin-left:0;
+}
+.module .second {
+  margin-top:2px;
+}
 /* .moduleBlue {
   color:#103eb9;
   border:solid 1px #103eb9;

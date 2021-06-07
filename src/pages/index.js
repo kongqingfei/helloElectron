@@ -28,6 +28,38 @@ function bindEvent() {
       }
     })
   })
+  // 选择应收Excel路径
+  qs('.financeYS .excel .jsPathSelect').addEventListener('click', () => {
+    remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+      properties: ['openFile'],
+      filters: [
+        { name: '创建应收.xlsx', extensions: ['xlsx'] }
+      ]
+    }).then((res) => {
+      const {canceled, filePaths} = res;
+      if (!canceled) {
+        qs('.financeYS .jsPath').innerHTML = filePaths[0]
+        config.financeYSExcelPath = filePaths[0]
+        ipcRenderer.send('setConfigValue', {financeYSExcelPath: config.financeYSExcelPath})
+      }
+    })
+  })
+  // 选择应收脚本路径
+  qs('.financeYS .script .jsPathSelect').addEventListener('click', () => {
+    remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+      properties: ['openFile'],
+      filters: [
+        { name: '创建应收.vbs', extensions: ['vbs'] }
+      ]
+    }).then((res) => {
+      const {canceled, filePaths} = res;
+      if (!canceled) {
+        qs('.financeYS .script .jsPath').innerHTML = filePaths[0]
+        config.financeYSScriptPath = filePaths[0]
+        ipcRenderer.send('setConfigValue', {financeYSScriptPath: config.financeYSScriptPath})
+      }
+    })
+  })
   // 选择下载草稿路径
   qs('.download .jsPathSelect').addEventListener('click', () => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), { properties: ['openDirectory'] }).then((res) => {
@@ -329,6 +361,77 @@ function bindEvent() {
       qs('.invoiceSubmit .remark').className = 'remark error'
     }
   })
+  // 创建应收
+  qs('.jsDoFinanceYS').addEventListener('click', async () => {
+    if (!isLogin) {
+      return await toast('请先登录')
+    }
+    if (!config.financeYSExcelPath) {
+      return await toast('请先设置Excel路径')
+    }
+    if (!config.financeYSScriptPath) {
+      return await toast('请先设置脚本路径')
+    }
+    const invoiceArr = (qs('.financeYS .jsInvoiceAll').value || '').split('\n').reduce((prev, cur) => {
+      const temp = cur.trim()
+      if (temp) {
+        prev.push(temp)
+      }
+      return prev
+    }, [])
+    if (invoiceArr.length === 0) {
+      return await toast('请先录入待处理合同号')
+    }
+    qs('.financeYS .jsInvoiceSuccess').value = ''
+    qs('.financeYS .jsNumSuccess').innerHTML = `共0个`
+    qs('.financeYS .jsInvoiceError').value = ''
+    qs('.financeYS .jsNumError').innerHTML = `共0个`
+    qs('.financeYS .remark').innerHTML = `&nbsp;`
+    qs('.financeYS .remark').className = 'remark'
+    currentTa = qs('#logFinanceYS')
+    getLog(true)
+    const {successArr, errorArr, isAuto, writeRet, scriptRet} = await ipcRenderer.invoke('puppeteer.createYS', {invoiceArr, financeYSExcelPath: config.financeYSExcelPath, financeYSScriptPath: config.financeYSScriptPath});
+    qs('.financeYS .jsNumAll').innerHTML = `共${invoiceArr.length}个`
+    qs('.financeYS .jsInvoiceSuccess').value = successArr.join('\n')
+    qs('.financeYS .jsNumSuccess').innerHTML = `共${successArr.length}个`
+    qs('.financeYS .jsInvoiceError').value = errorArr.join('\n')
+    qs('.financeYS .jsNumError').innerHTML = `共${errorArr.length}个`
+    stopLog()
+    qs('.financeYS .jsStatus').innerHTML = '（当前未运行）'
+    if (errorArr.length === 0) {
+      qs('.financeYS .remark').innerHTML = `合同全部处理 写入excel${writeRet ? '成功' : "失败"} ${isAuto ? `脚本自动执行${scriptRet ? '成功' : "失败，请手动执行"}` : `需要人工介入，请手动执行脚本`}`
+      qs('.financeYS .remark').className = 'remark success'
+    } else if (errorArr.length > 0 && writeRet) {
+      qs('.financeYS .remark').innerHTML = `合同部分处理 写入excel${writeRet ? '成功' : "失败"} ${isAuto ? `脚本自动执行${scriptRet ? '成功' : "失败，请手动执行"}` : `需要人工介入，请手动执行脚本`}`
+      qs('.financeYS .remark').className = 'remark success'
+    } else {
+      qs('.financeYS .remark').innerHTML = `合同处理失败`
+      qs('.financeYS .remark').className = 'remark error'
+    }
+  })
+  // 手动执行创建应收脚本
+  qs('.jsDoScriptFinanceYS').addEventListener('click', async () => {
+    if (!config.financeYSExcelPath) {
+      return await toast('请先设置Excel路径')
+    }
+    if (!config.financeYSScriptPath) {
+      return await toast('请先设置脚本路径')
+    }
+    qs('.financeYS .remark').innerHTML = `&nbsp;`
+    qs('.financeYS .remark').className = 'remark'
+    currentTa = qs('#logFinanceYS')
+    getLog(true)
+    const {ret, msg} = await ipcRenderer.invoke('puppeteer.executeYS', {financeYSExcelPath: config.financeYSExcelPath, financeYSScriptPath: config.financeYSScriptPath});
+    stopLog()
+    qs('.financeYS .jsStatus').innerHTML = '（当前未运行）'
+    if (ret) {
+      qs('.financeYS .remark').innerHTML = `脚本自动执行成功`
+      qs('.financeYS .remark').className = 'remark success'
+    } else {
+      qs('.financeYS .remark').innerHTML = `脚本自动执行失败`
+      qs('.financeYS .remark').className = 'remark error'
+    }
+  })
 }
 function getLog(doNext) {
   ipcRenderer.invoke('log.getLog').then((logArr) => {
@@ -352,7 +455,7 @@ function stopLog() {
   getLog()
 }
 function init() {
-  const {login, download={}, chromePath, contract={}} = config
+  const {login, download={}, chromePath, contract={}, financeYSExcelPath, financeYSScriptPath} = config
   qs('#name').value = login.name
   qs('#password').value = login.password
   if (download.draftPath) {
@@ -363,6 +466,12 @@ function init() {
   }
   if (chromePath) {
     qs('.login .jsPath').innerHTML = chromePath
+  }
+  if (financeYSExcelPath) {
+    qs('.financeYS .excel .jsPath').innerHTML = financeYSExcelPath
+  }
+  if (financeYSScriptPath) {
+    qs('.financeYS .script .jsPath').innerHTML = financeYSScriptPath
   }
   qs('.jsToWho').value = contract.toWho || '3'
   bindEvent()
